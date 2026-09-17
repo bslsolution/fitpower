@@ -8,7 +8,7 @@ Marcá cada ítem cuando esté hecho. Este es el orden de trabajo para el equipo
 - [x] Carpeta `documentos/base-de-datos/` (MER, pasaje a tablas, SQL)
 - [x] Esquema SQL alineado con Docker (`api/config/init.sql`)
 - [x] Carpeta `assets/` con landing, login y dashboards (entrenador, socio, admin)
-- [ ] Repositorio en GitHub para trabajar en equipo
+- [x] Repositorio en GitHub para trabajar en equipo
 
 ## 1. Base de datos
 
