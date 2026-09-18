@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'autoload.php';
 
+\App\Utils\Auth::iniciarSesion();
+
 // 3. Cargar las variables del archivo .env
 \App\Utils\EnvLoader::load(__DIR__ . '/.env');
 

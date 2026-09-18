@@ -10,10 +10,17 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS entrenamiento_series;
+DROP TABLE IF EXISTS entrenamientos;
+DROP TABLE IF EXISTS notificaciones;
+DROP TABLE IF EXISTS canjes_fitpoints;
+DROP TABLE IF EXISTS recompensas_fitpoints;
+DROP TABLE IF EXISTS progreso_pesos;
 DROP TABLE IF EXISTS series;
 DROP TABLE IF EXISTS rutina_ejercicios;
 DROP TABLE IF EXISTS rutinas;
 DROP TABLE IF EXISTS ejercicios;
+DROP TABLE IF EXISTS grupos_musculares;
 DROP TABLE IF EXISTS socios;
 DROP TABLE IF EXISTS entrenadores;
 DROP TABLE IF EXISTS usuarios;
@@ -59,11 +66,24 @@ CREATE TABLE entrenadores (
 CREATE TABLE socios (
     id_socio INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL UNIQUE,
+    id_entrenador INT NULL,
     fecha_nacimiento DATE NULL,
     notas VARCHAR(255) NULL,
+    fitpoints INT NOT NULL DEFAULT 0,
     CONSTRAINT fk_socios_usuario
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_socios_entrenador
+        FOREIGN KEY (id_entrenador) REFERENCES entrenadores(id_entrenador)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- CATÁLOGO DE GRUPOS MUSCULARES (el admin los edita)
+-- --------------------------------------------------------
+CREATE TABLE grupos_musculares (
+    id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -132,6 +152,81 @@ CREATE TABLE series (
     INDEX idx_series_re_orden (id_rutina_ejercicio, orden)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Entrenamientos que el socio guarda con Terminar (historial de progreso)
+CREATE TABLE entrenamientos (
+    id_entrenamiento INT AUTO_INCREMENT PRIMARY KEY,
+    id_socio INT NOT NULL,
+    id_rutina INT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fitpoints_otorgados TINYINT(1) NOT NULL DEFAULT 0,
+    CONSTRAINT fk_ent_socio
+        FOREIGN KEY (id_socio) REFERENCES socios(id_socio)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_ent_rutina
+        FOREIGN KEY (id_rutina) REFERENCES rutinas(id_rutina)
+        ON DELETE SET NULL,
+    INDEX idx_ent_socio_fecha (id_socio, fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE entrenamiento_series (
+    id_entrenamiento_serie INT AUTO_INCREMENT PRIMARY KEY,
+    id_entrenamiento INT NOT NULL,
+    id_serie_origen INT NULL,
+    id_ejercicio INT NOT NULL,
+    nombre_ejercicio VARCHAR(100) NOT NULL,
+    grupo_muscular VARCHAR(50) NULL,
+    serie_orden INT NOT NULL,
+    repeticiones INT NOT NULL,
+    peso_kg DECIMAL(6,2) NULL,
+    descanso_segundos INT NULL,
+    CONSTRAINT fk_ents_entrenamiento
+        FOREIGN KEY (id_entrenamiento) REFERENCES entrenamientos(id_entrenamiento)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_ents_ejercicio
+        FOREIGN KEY (id_ejercicio) REFERENCES ejercicios(id_ejercicio),
+    UNIQUE KEY uk_ents_entrenamiento_serie (id_entrenamiento, id_serie_origen)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- RECOMPENSAS CANJEABLES CON FITPOINTS (las arma el administrador)
+-- --------------------------------------------------------
+CREATE TABLE recompensas_fitpoints (
+    id_recompensa INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL,
+    costo_puntos INT NOT NULL,
+    imagen VARCHAR(255) NOT NULL,
+    descripcion VARCHAR(255) NULL,
+    fecha_alta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE canjes_fitpoints (
+    id_canje INT AUTO_INCREMENT PRIMARY KEY,
+    id_socio INT NOT NULL,
+    id_recompensa INT NULL,
+    nombre VARCHAR(120) NOT NULL,
+    costo_puntos INT NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_canje_socio
+        FOREIGN KEY (id_socio) REFERENCES socios(id_socio)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_canje_recompensa
+        FOREIGN KEY (id_recompensa) REFERENCES recompensas_fitpoints(id_recompensa)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE notificaciones (
+    id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
+    destinatario_rol VARCHAR(20) NOT NULL,
+    id_usuario_destinatario INT NULL,
+    tipo VARCHAR(40) NOT NULL,
+    datos JSON NULL,
+    leida TINYINT(1) NOT NULL DEFAULT 0,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_notif_rol_fecha (destinatario_rol, fecha),
+    INDEX idx_notif_usuario (id_usuario_destinatario, leida)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ========================================================
 -- DATOS DE PRUEBA
 -- Hash bcrypt de "password":
@@ -151,8 +246,16 @@ INSERT INTO usuarios (id_usuario, id_rol, nombre, apellido, email, password_hash
 INSERT INTO entrenadores (id_entrenador, id_usuario, especialidad, bio) VALUES
     (1, 2, 'Fuerza e hipertrofia', 'Personal trainer del gimnasio');
 
-INSERT INTO socios (id_socio, id_usuario, fecha_nacimiento, notas) VALUES
-    (1, 3, '2000-05-12', 'Socio de prueba');
+INSERT INTO socios (id_socio, id_usuario, id_entrenador, fecha_nacimiento, notas, fitpoints) VALUES
+    (1, 3, 1, '2000-05-12', 'Socio de prueba', 50);
+
+INSERT INTO grupos_musculares (id_grupo, nombre) VALUES
+    (1, 'Pierna'),
+    (2, 'Pecho'),
+    (3, 'Espalda'),
+    (4, 'Core'),
+    (5, 'Hombros'),
+    (6, 'Brazos');
 
 INSERT INTO ejercicios (id_ejercicio, id_entrenador_creador, nombre, grupo_muscular, descripcion) VALUES
     (1, 1, 'Sentadilla', 'Pierna', 'Barra en espalda, cadera atrás, rodillas alineadas.'),

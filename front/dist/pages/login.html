@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title_login">Iniciar sesión — FitPower</title>
+    <link rel="icon" type="image/png" href="../imagenes/FitPoints-navy.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css?v=login-lang">
+    <link rel="stylesheet" href="../css/mobile.css?v=login-fix">
+</head>
+<body class="login-page">
+    <div id="fp-loader" class="fp-loader" role="status" aria-label="Cargando" data-i18n-aria="loader">
+        <img src="../imagenes/FitPoints-navy.png" alt="" class="fp-loader-img">
+    </div>
+    <div class="login-image"><span data-i18n="login_side">Login</span></div>
+    <div class="login-form-side">
+        <div class="login-lang">
+            <div class="lang-switch" role="group" aria-label="Idioma" data-i18n-aria="lang">
+                <button type="button" data-set-lang="es">ES</button>
+                <button type="button" data-set-lang="en">EN</button>
+            </div>
+        </div>
+        <form class="login-form login-form-wrapper" id="form-login">
+            <h1 data-i18n="login_h1">Iniciar sesión</h1>
+            <div class="alert" id="error"></div>
+            <div class="field">
+                <label for="email" data-i18n="login_email">Email</label>
+                <input id="email" name="email" type="email" placeholder="Ingresá Email" required data-i18n-placeholder="login_email_ph">
+            </div>
+            <div class="field">
+                <label for="password" data-i18n="login_pass">Contraseña</label>
+                <input id="password" name="password" type="password" placeholder="Ingresá contraseña" required data-i18n-placeholder="login_pass_ph">
+            </div>
+            <button class="btn btn-navy" type="submit" data-i18n="login_submit">Iniciar sesión</button>
+            <img src="../imagenes/FitPoints-navy.png" alt="FitPower" class="login-logo">
+            <p class="hint"><a href="/front/index.html" data-i18n="login_back">Volver al inicio</a></p>
+        </form>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/i18n.js?v=login-fix"></script>
+    <script src="../js/loader.js"></script>
+    <script src="../js/auth.js?v=i18n"></script>
+    <script src="../js/login.js?v=i18n"></script>
+</body>
+</html>
