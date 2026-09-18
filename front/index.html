@@ -1,30 +1,353 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primera consulta a la API</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./dist/css/style.css">
-    <link rel="stylesheet" href="./dist/css/mobile.css">
+    <title data-i18n="title">FitPower — Entrena como un profesional</title>
+    <link rel="icon" type="image/png" href="./dist/imagenes/FitPoints-navy.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./dist/css/landing.css?v=keep-legal">
 </head>
-<body>
 
-    <header>
+<body class="landing-page">
+    <div id="fp-loader" class="fp-loader" role="status" aria-label="Cargando" data-i18n-aria="loader">
+        <img src="./dist/imagenes/FitPoints-navy.png" alt="" class="fp-loader-img">
+    </div>
+    <nav class="navbar navbar-expand-md navbar-dark sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/front/index.html">
+                <img src="./dist/imagenes/FitPoints-white.png" alt="FitPower" class="logo-header me-2">
+                <span class="fs-4">FitPower</span>
+            </a>
 
-    </header>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú" data-i18n-aria="menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <main class="container py-4">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
+                    <li class="nav-item"><a class="nav-link" href="#informacion" data-i18n="footer_info">Información</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#entrenadores" data-i18n="nav_coaches">Entrenadores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#planes" data-i18n="nav_plans">Planes</a></li>
+                    <li class="nav-item">
+                        <button type="button" id="lang-toggle" class="btn-lang" aria-label="Idioma">
+                            <span data-lang-opt="es" class="is-active">ES</span>
+                            <span data-lang-opt="en">EN</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-ingresar" href="/front/dist/pages/login.html" data-i18n="nav_login">Ingresar</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <main>
+        <section class="hero text-white text-center text-md-start d-flex align-items-center py-5">
+            <div class="container py-4">
+                <h1 class="fw-bold display-4" data-i18n-html="hero_title">
+                    Entrena como<br>un profesional
+                </h1>
+                <p class="fs-5 fw-semibold mt-3" data-i18n="hero_sub">
+                    Planes personalizados, seguimiento de progreso y entrenadores dispuestos a ayudarte.
+                </p>
+                <a href="/front/dist/pages/login.html" class="btn btn-primary btn-lg rounded-pill mt-3 mb-5" data-i18n="cta_start">Comienza ahora</a>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-primary text-white p-4 h-100">
+                            <img src="./dist/imagenes/report.png" class="hero-card-icon mb-3" alt="">
+                            <h6 class="fw-bold" data-i18n="card1_t">RUTINAS PERSONALIZADAS</h6>
+                            <p class="mb-0 fw-semibold" data-i18n="card1_p">Entrenamientos adaptados a tus objetivos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-primary text-white p-4 h-100">
+                            <img src="./dist/imagenes/grafica.png" class="hero-card-icon mb-3" alt="">
+                            <h6 class="fw-bold" data-i18n="card2_t">MONITOREA TU AVANCE</h6>
+                            <p class="mb-0 fw-semibold" data-i18n="card2_p">Realizá un seguimiento de tu progreso</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-primary text-white p-4 h-100">
+                            <img src="./dist/imagenes/mancuerna2.png" class="hero-card-icon mb-3" alt="">
+                            <h6 class="fw-bold" data-i18n="card3_t">ASESORÍA DE EXPERTOS</h6>
+                            <p class="mb-0 fw-semibold" data-i18n="card3_p">Entrenadores certificados a tu servicio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="why-us text-center py-5" id="informacion">
+            <div class="container">
+                <h2 class="fw-bold" data-i18n="why_title">¿Por qué elegir FitPower?</h2>
+                <hr class="divider mx-auto mb-5">
+
+                <div class="row">
+                    <div class="col-md-4 mb-4 d-flex align-items-start text-start why-item">
+                        <div class="icon-circle me-3"><img src="./dist/imagenes/user.png" alt=""></div>
+                        <div>
+                            <h6 class="fw-bold mb-1" data-i18n="why1_t">Entrenamiento para todos</h6>
+                            <p class="text-primary fw-semibold mb-0" data-i18n="why1_p">
+                                Planes para principiantes y avanzados, adaptados a tu nivel.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4 d-flex align-items-start text-start why-item">
+                        <div class="icon-circle me-3"><img src="./dist/imagenes/muscle.png" alt=""></div>
+                        <div>
+                            <h6 class="fw-bold mb-1" data-i18n="why2_t">Resultados reales</h6>
+                            <p class="text-primary fw-semibold mb-0" data-i18n="why2_p">
+                                Métodos efectivos que te acercan a tus objetivos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4 d-flex align-items-start text-start why-item">
+                        <div class="icon-circle me-3"><img src="./dist/imagenes/comunidad.png" alt=""></div>
+                        <div>
+                            <h6 class="fw-bold mb-1" data-i18n="why3_t">Comunidad motivadora</h6>
+                            <p class="text-primary fw-semibold mb-0" data-i18n="why3_p">
+                                Sé parte de una comunidad que te impulsa a ser tu mejor versión.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trainers text-center py-5" id="entrenadores">
+            <div class="container">
+                <h2 class="fw-bold" data-i18n="trainers_title">Conoce a nuestros entrenadores</h2>
+                <hr class="divider mx-auto mb-5">
+
+                <div class="row">
+                    <div class="col-md-4 mb-4 trainer-card">
+                        <img src="./dist/imagenes/Entrenador1.png"
+                            class="trainer-img rounded-circle mb-3" alt="Martín Perez">
+                        <h5 class="fw-bold text-primary">Martín Perez</h5>
+                        <p class="fw-bold" data-i18n="trainer1_role">Musculación</p>
+                        <hr class="divider-sm mx-auto mb-2">
+                        <span class="trainer-tag" data-i18n="trainer1_t1">Musculación</span>
+                        <span class="trainer-tag" data-i18n="trainer1_t2">Fuerza</span>
+                        <span class="trainer-tag" data-i18n="trainer1_t3">Hipertrofia</span>
+                    </div>
+
+                    <div class="col-md-4 mb-4 trainer-card">
+                        <img src="./dist/imagenes/Entrenadora.png"
+                            class="trainer-img rounded-circle mb-3" alt="Camila Torres">
+                        <h5 class="fw-bold text-primary">Camila Torres</h5>
+                        <p class="fw-bold" data-i18n="trainer2_role">Entrenamiento funcional</p>
+                        <hr class="divider-sm mx-auto mb-2">
+                        <span class="trainer-tag" data-i18n="trainer2_t1">Funcional</span>
+                        <span class="trainer-tag" data-i18n="trainer2_t2">HIT</span>
+                        <span class="trainer-tag" data-i18n="trainer2_t3">Movilidad</span>
+                    </div>
+
+                    <div class="col-md-4 mb-4 trainer-card">
+                        <img src="./dist/imagenes/Entrenador2.png"
+                            class="trainer-img rounded-circle mb-3" alt="Lucas Ferrari">
+                        <h5 class="fw-bold text-primary">Lucas Ferrari</h5>
+                        <p class="fw-bold" data-i18n="trainer3_role">Preparación física</p>
+                        <hr class="divider-sm mx-auto mb-2">
+                        <span class="trainer-tag" data-i18n="trainer3_t1">Resistencia</span>
+                        <span class="trainer-tag" data-i18n="trainer3_t2">Cardio</span>
+                        <span class="trainer-tag" data-i18n="trainer3_t3">Cross training</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="plans text-center py-5" id="planes">
+            <div class="container">
+                <h2 class="fw-bold" data-i18n="plans_title">Planes para cada objetivo</h2>
+                <hr class="divider mx-auto mb-5">
+
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4">
+                            <div class="card-body">
+                                <div class="icon-circle mx-auto mb-3"><img src="./dist/imagenes/shoe.png" alt=""></div>
+                                <h5 class="fw-bold" data-i18n="plan_basic">Básico</h5>
+                                <p class="fw-semibold" data-i18n="plan_basic_p">Ideal para comenzar tu camino fitness</p>
+                                <h3 class="fw-bold text-primary mb-4">$1200 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
+                                <ul class="list-unstyled text-start">
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_basic">Seguimiento básico</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                </ul>
+                                <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4 plan-popular">
+                            <div class="card-header bg-primary text-white rounded-pill popular-tag" data-i18n="popular">¡MÁS POPULAR!</div>
+                            <div class="card-body">
+                                <div class="icon-circle mx-auto mb-3"><img src="./dist/imagenes/mancuerna.png" alt=""></div>
+                                <h5 class="fw-bold" data-i18n="plan_pro">Pro</h5>
+                                <p class="fw-semibold" data-i18n="plan_pro_p">Para quienes buscan resultados reales</p>
+                                <h3 class="fw-bold text-primary mb-4">$1600 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
+                                <ul class="list-unstyled text-start">
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_advanced">Seguimiento avanzado</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Asesoría con un entrenador</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                </ul>
+                                <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-4">
+                            <div class="card-body">
+                                <div class="icon-circle mx-auto mb-3"><img src="./dist/imagenes/crown.png?v=transp" alt=""></div>
+                                <h5 class="fw-bold" data-i18n="plan_elite">Elite</h5>
+                                <p class="fw-semibold" data-i18n="plan_elite_p">El máximo nivel de acompañamiento</p>
+                                <h3 class="fw-bold text-primary mb-4">$2000 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
+                                <ul class="list-unstyled text-start">
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_advanced">Seguimiento avanzado</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Asesoría con un entrenador</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                </ul>
+                                <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section py-5" id="faq">
+            <div class="container">
+                <h2 class="fw-bold text-center" data-i18n="faq_title">Preguntas frecuentes</h2>
+                <hr class="divider mx-auto mb-5">
+
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1" data-i18n="faq1_q">¿Cómo empiezo?</button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body" data-i18n="faq1_a">Creá tu cuenta desde Ingresar. El administrador te asigna un entrenador y tu rutina aparece en el panel de socio.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2" data-i18n="faq2_q">¿Puedo cambiar de plan después?</button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body" data-i18n="faq2_a">Sí. Los planes no tienen permanencia mínima. Escribínos y ajustamos el nivel de acompañamiento.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3" data-i18n="faq3_q">¿Necesito un entrenador asignado?</button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body" data-i18n="faq3_a">En Pro y Elite, sí: un entrenador arma y ajusta tu rutina. En Básico accedés a la plataforma y al seguimiento esencial.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4" data-i18n="faq4_q">¿Cómo se guarda el progreso?</button>
+                        </h3>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body" data-i18n="faq4_a">Al terminar cada serie en tu rutina, esa sesión queda en Progreso. Podés repetir el entrenamiento cuando quieras.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="legal-section py-5" id="legal">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-6" id="terminos">
+                        <article class="legal-card">
+                            <h3 class="fw-bold" data-i18n="terms_title">Términos y condiciones</h3>
+                            <p class="mb-0" data-i18n="terms_p">El acceso a FitPower es personal e intransferible. Las rutinas y el seguimiento están pensados para uso recreativo; consultá a un profesional de la salud antes de comenzar. FitPower puede actualizar planes y contenidos con aviso previo.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-6" id="privacidad">
+                        <article class="legal-card">
+                            <h3 class="fw-bold" data-i18n="privacy_title">Política de privacidad</h3>
+                            <p class="mb-0" data-i18n="privacy_p">Usamos tus datos de cuenta (nombre, email y registros de entrenamiento) solo para operar la plataforma. No vendemos información a terceros. Podés pedir la baja de tu cuenta escribiendo a nuestro correo de contacto.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-banner text-white py-4">
+            <div class="container d-flex flex-wrap align-items-center justify-content-between">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <span class="cta-icon me-3" aria-hidden="true">🏋️</span>
+                    <h4 class="fw-bold mb-0" data-i18n="cta_banner">¿Listo para transformar tu vida?</h4>
+                </div>
+                <a href="/front/dist/pages/login.html" class="btn btn-light rounded-pill fw-bold text-primary px-4" data-i18n="cta_start">Comienza ahora</a>
+            </div>
+        </section>
     </main>
 
-    <footer class="container py-3 text-muted">
-        <small>estadi de api: <a href="/api/estado" target="_blank">/api/estado</a></small>
+    <footer>
+        <div class="container2 container-fluid">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5">
+                <div class="col mb-3">
+                    <a href="/front/index.html" class="d-flex align-items-center mb-3 text-decoration-none">
+                        <img src="./dist/imagenes/FitPoints-white.png" alt="" class="logo-header me-2">
+                        <p class="text-body-secondary fw-bold footer-title mb-0">FitPower</p>
+                    </a>
+                    <p class="text-body-secondary footer-text" data-i18n-html="footer_text">
+                        Tu gimnasio, tu plan,<br>
+                        tu progreso. Estamos contigo<br>
+                        en cada paso.
+                    </p>
+                </div>
+                <div class="col mb-3"></div>
+                <div class="col mb-3">
+                    <h5 class="ftxt" data-i18n="footer_nav">Navegación</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#entrenadores" class="nav-link p-0 text-body-secondary" data-i18n="footer_trainers">Entrenadores</a></li>
+                        <li class="nav-item mb-2"><a href="#informacion" class="nav-link p-0 text-body-secondary" data-i18n="footer_info">Información</a></li>
+                        <li class="nav-item mb-2"><a href="#planes" class="nav-link p-0 text-body-secondary" data-i18n="footer_plans">Planes</a></li>
+                    </ul>
+                </div>
+                <div class="col mb-3">
+                    <h5 class="ftxt" data-i18n="footer_resources">Recursos</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#faq" class="nav-link p-0 text-body-secondary" data-i18n="footer_faq">Preguntas frecuentes</a></li>
+                        <li class="nav-item mb-2"><a href="#terminos" class="nav-link p-0 text-body-secondary" data-i18n="footer_terms">Términos y condiciones</a></li>
+                        <li class="nav-item mb-2"><a href="#privacidad" class="nav-link p-0 text-body-secondary" data-i18n="footer_privacy">Políticas de privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="col mb-3">
+                    <h5 class="ftxt" data-i18n="footer_contact">Contacto</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="mailto:bslsolution36@gmail.com" class="nav-link p-0 text-body-secondary">bslsolution36@gmail.com</a></li>
+                        <li class="nav-item mb-2"><a href="tel:+598095514077" class="nav-link p-0 text-body-secondary">+598 095 514 077</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="./dist/js/api.js"></script>
-    <script src="./dist/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="./dist/js/i18n.js?v=keep-legal"></script>
+    <script src="./dist/js/loader.js"></script>
 </body>
+
 </html>

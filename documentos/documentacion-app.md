@@ -126,7 +126,7 @@ Marca del diseño: **FitPower**. Referencia visual en `assets/` (landing, login,
 | Login | En el diseño: email + n° de socio. En la API v1: email + contraseña → `POST /api/login` |
 | Dashboard admin | Alta de usuarios (único que registra), listado |
 | Dashboard entrenador | Crear rutina, socios, gestionar ejercicios (ordenar y series) |
-| Dashboard socio | Ver rutinas, ejercicios y series (solo lectura) |
+| Dashboard socio | Ver rutinas, cargar peso por serie, ver progreso |
 
 El front que corre Docker vive en `front/`. `assets/` es referencia visual, no se sirve como app.
 
@@ -145,7 +145,7 @@ El resto está en el checklist (sección 2).
 1. **Un usuario = un rol.** No hay socio-entrenador en v1.
 2. **Plantilla vs asignada.** El entrenador puede guardar una rutina plantilla (`id_socio` NULL). Al asignar se **copia** a una rutina del socio. Así se puede retocar la de Juan sin cambiar la de Ana.
 3. **Orden explícito.** `rutina_ejercicios.orden` y `series.orden` son enteros. Mover = actualizar esos números (el front puede mandar un array de ids).
-4. **El socio no escribe** en rutinas. PUT/DELETE de rutina/ejercicio/serie: entrenador (dueño) o admin.
+4. **El socio no arma la rutina.** PUT/DELETE de rutina/ejercicio/serie quedan para entrenador o admin. El socio registra el entrenamiento al apretar **Terminar** en cada serie: se crea/actualiza un `entrenamiento` y sus series.
 5. **Alta de usuarios:** solo rol administrador. No hay `/register` público.
 
 ## 11. Dónde está el modelo de datos

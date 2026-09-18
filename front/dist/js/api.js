@@ -1,30 +1,72 @@
-// front/dist/js/api.js
-// El mensajero: el HTML nunca habla con PHP directo. Pasa por acá.
-
 const API = {
-    // En Docker: http://localhost:8080/api
     urlBase: '/api',
 
     async request(endpoint, method = 'GET', data = null) {
-        const url = this.urlBase + endpoint;
-
         const opciones = {
-            method: method,
-            headers: { 'Content-Type': 'application/json' }
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin'
         };
-
-        // GET no lleva body. POST/PUT sí.
-        if (data) {
+        if (data !== null && method !== 'GET') {
             opciones.body = JSON.stringify(data);
         }
 
         try {
-            const respuesta = await fetch(url, opciones);
-            const json = await respuesta.json();
+            const respuesta = await fetch(this.urlBase + endpoint, opciones);
+            let json = {};
+            try {
+                json = await respuesta.json();
+            } catch (e) {
+                json = { status: 'error', message: 'Respuesta inválida de la API' };
+            }
+            json.http = respuesta.status;
+            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me') {
+                location.href = FRONT.login;
+            }
             return json;
         } catch (error) {
             console.error('Error de conexión con la API:', error);
-            return { status: 'error', message: 'No se pudo conectar con la API' };
+            return { status: 'error', message: 'No se pudo conectar con la API', http: 0 };
         }
+    },
+
+    get(endpoint) { return this.request(endpoint, 'GET'); },
+        post(endpoint, data) { return this.request(endpoint, 'POST', data); },
+    put(endpoint, data) { return this.request(endpoint, 'PUT', data); },
+    del(endpoint) { return this.request(endpoint, 'DELETE'); },
+
+    async postForm(endpoint, formData) {
+        try {
+            const respuesta = await fetch(this.urlBase + endpoint, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            });
+            let json = {};
+            try {
+                json = await respuesta.json();
+            } catch (e) {
+                json = { status: 'error', message: 'Respuesta inválida de la API' };
+            }
+            json.http = respuesta.status;
+            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me') {
+                location.href = FRONT.login;
+            }
+            return json;
+        } catch (error) {
+            console.error('Error de conexión con la API:', error);
+            return { status: 'error', message: 'No se pudo conectar con la API', http: 0 };
+        }
+    }
+};
+
+const FRONT = {
+    landing: '/front/index.html',
+    login: '/front/dist/pages/login.html',
+    rutina: '/front/dist/pages/rutina.html',
+    dashboards: {
+        administrador: '/front/dist/pages/dashboard-admin.html',
+        entrenador: '/front/dist/pages/dashboard-entrenador.html',
+        socio: '/front/dist/pages/dashboard-socio.html'
     }
 };

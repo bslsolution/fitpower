@@ -1,1 +1,48 @@
-/* Estilos mobile: se agregan en otra clase */
+@media (max-width: 900px) {
+    .site-header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 20px;
+    }
+
+    .site-header nav { gap: 14px; font-size: 14px; flex-wrap: wrap; justify-content: center; }
+
+    .hero { padding: 72px 20px 48px; min-height: auto; }
+    .hero-pills, .why-grid, .trainers-grid, .plans-wrap, .grid-3, .grid-2, .grid-4, .routine-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .plan.featured { transform: none; }
+    .cta-banner, .section, .site-footer { margin-left: 16px; margin-right: 16px; padding-left: 20px; padding-right: 20px; }
+    .cta-banner { flex-direction: column; gap: 16px; text-align: center; }
+    .site-footer { grid-template-columns: 1fr 1fr; }
+
+    .login-page { grid-template-columns: 1fr; }
+    .login-image, .login-photo { min-height: 220px; }
+    .login-form-side { min-height: auto; padding-top: 64px; }
+    .login-form { padding: 32px 22px 40px; }
+
+    .app { grid-template-columns: 1fr; }
+    .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .sidebar .logo { padding: 0 8px 0 0; }
+    .side-nav { display: flex; flex-wrap: wrap; gap: 4px; }
+    .side-nav a, .side-nav button { width: auto; }
+    .side-spacer { display: none; }
+    .app-main { padding: 16px; }
+
+    .exercise-block {
+        grid-template-columns: 1fr;
+    }
+    .exercise-gif {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+    .reward-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .fp-balance { gap: 12px; }
+    .fp-balance > img { width: 56px; height: 56px; }
+    .fp-balance-text strong { font-size: 1.7rem; }
+    .workout-timer { top: 0; }
+    .timer-time { font-size: 1.8rem; }
+}
