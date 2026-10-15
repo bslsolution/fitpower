@@ -6,6 +6,13 @@ class Auth {
         if (session_status() === PHP_SESSION_ACTIVE) {
             return;
         }
+        $dir = '/tmp/fitpower-sessions';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+        if (is_dir($dir) && is_writable($dir)) {
+            session_save_path($dir);
+        }
         session_set_cookie_params([
             'lifetime' => 0,
             'path' => '/',

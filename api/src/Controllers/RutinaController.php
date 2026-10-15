@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\EjercicioModel;
 use App\Models\RutinaModel;
 use App\Models\SocioModel;
+use App\Models\UsuarioModel;
 use App\Utils\ApiResponse;
 use App\Utils\Auth;
 
@@ -42,16 +43,21 @@ class RutinaController {
             ApiResponse::error('Este usuario no tiene perfil de socio', 403);
             return;
         }
+        $fresca = (new UsuarioModel($this->db))->porId((int) $usuario['id_usuario']);
+        if ($fresca) {
+            $usuario['fecha_alta'] = $fresca['fecha_alta'] ?? null;
+            $usuario['activo'] = $fresca['activo'] ?? 1;
+            $usuario['membresia_activa'] = $fresca['membresia_activa'] ?? 1;
+            $usuario['membresia_vence'] = $fresca['membresia_vence'] ?? null;
+        }
         $rutinas = $this->modelo->listarDeSocio((int) $usuario['id_socio']);
         $entrenador = $this->modelo->entrenadorDeSocio((int) $usuario['id_socio']);
-        $vence = null;
-        if (!empty($usuario['fecha_alta'])) {
-            $vence = (new \DateTime($usuario['fecha_alta']))->modify('+1 year')->format('d/m/Y');
-        }
+        $vence = UsuarioModel::venceFormato($usuario['membresia_vence'] ?? null);
+        $activa = UsuarioModel::membresiaDesde($usuario) === 'activa';
         ApiResponse::ok([
             'rutinas' => $rutinas,
             'entrenador' => $entrenador,
-            'membresia' => $usuario['activo'] ? 'activa' : 'inactiva',
+            'membresia' => $activa ? 'activa' : 'inactiva',
             'vence_el' => $vence,
         ]);
     }
@@ -93,9 +99,20 @@ class RutinaController {
             ApiResponse::error('El nombre de la rutina es obligatorio');
             return;
         }
+        $idSocio = (int) ($datos['id_socio'] ?? 0);
+        $socio = $idSocio > 0 ? (new SocioModel($this->db))->porId($idSocio) : null;
+        if (!$socio) {
+            ApiResponse::error('Elegí un socio');
+            return;
+        }
+        if ($usuario['rol'] === 'entrenador'
+            && (int) ($socio['id_entrenador'] ?? 0) !== (int) $usuario['id_entrenador']) {
+            ApiResponse::error('Ese socio no está asignado a tu cargo', 403);
+            return;
+        }
         $id = $this->modelo->crear([
             'id_entrenador' => $usuario['id_entrenador'] ?? (int) ($datos['id_entrenador'] ?? 0),
-            'id_socio' => null,
+            'id_socio' => $idSocio,
             'nombre' => $nombre,
             'objetivo' => trim((string) ($datos['objetivo'] ?? '')) ?: null,
             'estado' => 'activa',

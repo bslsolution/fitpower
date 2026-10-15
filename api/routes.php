@@ -7,9 +7,13 @@ $router->get('/estado', 'EstadoController@ver');
 $router->post('/login', 'AuthController@login');
 $router->post('/logout', 'AuthController@logout');
 $router->get('/me', 'AuthController@me');
+$router->post('/me/visita', 'AuthController@registrarVisita');
 
 $router->get('/usuarios', 'UsuarioController@listar');
 $router->post('/usuarios', 'UsuarioController@crear');
+$router->put('/usuarios/:id/membresia', 'UsuarioController@actualizarMembresia');
+$router->put('/usuarios/:id', 'UsuarioController@actualizar');
+$router->delete('/usuarios/:id', 'UsuarioController@borrar');
 $router->get('/admin/resumen', 'UsuarioController@resumen');
 
 $router->get('/socios', 'SocioController@listar');

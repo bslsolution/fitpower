@@ -5,7 +5,7 @@ const API = {
         const opciones = {
             method,
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin'
+            credentials: 'include'
         };
         if (data !== null && method !== 'GET') {
             opciones.body = JSON.stringify(data);
@@ -20,7 +20,7 @@ const API = {
                 json = { status: 'error', message: 'Respuesta inválida de la API' };
             }
             json.http = respuesta.status;
-            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me') {
+            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me' && endpoint !== '/me/visita') {
                 location.href = FRONT.login;
             }
             return json;
@@ -40,7 +40,7 @@ const API = {
             const respuesta = await fetch(this.urlBase + endpoint, {
                 method: 'POST',
                 body: formData,
-                credentials: 'same-origin'
+                credentials: 'include'
             });
             let json = {};
             try {
@@ -49,7 +49,7 @@ const API = {
                 json = { status: 'error', message: 'Respuesta inválida de la API' };
             }
             json.http = respuesta.status;
-            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me') {
+            if (respuesta.status === 401 && endpoint !== '/login' && endpoint !== '/me' && endpoint !== '/me/visita') {
                 location.href = FRONT.login;
             }
             return json;

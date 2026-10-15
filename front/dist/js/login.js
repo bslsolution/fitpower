@@ -8,8 +8,11 @@ document.getElementById('form-login').addEventListener('submit', async (ev) => {
         password: document.getElementById('password').value
     });
 
-    if (res.status !== 'ok') {
-        error.textContent = I18n.api(res.message, 'login_fail');
+    if (res.status !== 'ok' || !res.usuario || !res.usuario.rol) {
+        const fallback = (typeof I18n !== 'undefined' && I18n.api)
+            ? I18n.api(res.message, 'login_fail')
+            : (res.message || 'No se pudo iniciar sesión');
+        error.textContent = fallback;
         error.style.display = 'block';
         return;
     }

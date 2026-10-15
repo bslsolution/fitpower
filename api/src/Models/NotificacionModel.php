@@ -7,6 +7,16 @@ class NotificacionModel {
     public function __construct($db) {
         $this->db = $db;
         self::asegurarTabla($db);
+        try {
+            static $limpieza = false;
+            if (!$limpieza) {
+                $limpieza = true;
+                $this->borrarDeRolPorTipo('entrenador', 'mensualidad_vencida');
+                $this->borrarDeRolPorTipo('entrenador', 'inactividad');
+            }
+        } catch (\Throwable $e) {
+            // Si la limpieza falla, no bloquea el resto de notificaciones.
+        }
     }
 
     public static function asegurarTabla($db): void {
@@ -98,6 +108,21 @@ class NotificacionModel {
         $stmt->execute(['rol' => $rol, 'usuario' => $idUsuario]);
     }
 
+    public function borrarNuevaTipo(string $rol, string $tipo, int $idUsuario): void {
+        $stmt = $this->db->prepare(
+            'DELETE FROM notificaciones
+             WHERE destinatario_rol = :rol
+               AND tipo = :tipo
+               AND id_usuario_destinatario = :usuario
+               AND leida = 0'
+        );
+        $stmt->execute([
+            'rol' => $rol,
+            'tipo' => $tipo,
+            'usuario' => $idUsuario,
+        ]);
+    }
+
     public function existeNueva(string $rol, string $tipo, int $idUsuario, ?int $idSocio = null): bool {
         $sql = 'SELECT id_notificacion FROM notificaciones
                 WHERE destinatario_rol = :rol
@@ -113,5 +138,12 @@ class NotificacionModel {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return (bool) $stmt->fetchColumn();
+    }
+
+    public function borrarDeRolPorTipo(string $rol, string $tipo): void {
+        $stmt = $this->db->prepare(
+            'DELETE FROM notificaciones WHERE destinatario_rol = :rol AND tipo = :tipo'
+        );
+        $stmt->execute(['rol' => $rol, 'tipo' => $tipo]);
     }
 }

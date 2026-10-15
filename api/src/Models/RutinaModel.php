@@ -6,6 +6,16 @@ class RutinaModel {
 
     public function __construct($db) {
         $this->db = $db;
+        try {
+            UsuarioModel::asegurarColumnaMembresia($db);
+        } catch (\Throwable $e) {
+            // Si la columna no se puede crear, no bloquea el resto de la API.
+        }
+        try {
+            EjercicioModel::asegurarColumnaImagen($db);
+        } catch (\Throwable $e) {
+            // Si la columna no se puede crear, no bloquea el resto de la API.
+        }
     }
 
     public function listarDeEntrenador(int $idEntrenador): array {
@@ -24,7 +34,18 @@ class RutinaModel {
     public function listarDeSocio(int $idSocio): array {
         $stmt = $this->db->prepare(
             'SELECT r.*,
-                    ue.nombre AS entrenador_nombre, ue.apellido AS entrenador_apellido
+                    ue.nombre AS entrenador_nombre, ue.apellido AS entrenador_apellido,
+                    (
+                        SELECT e.grupo_muscular
+                        FROM rutina_ejercicios re
+                        JOIN ejercicios e ON e.id_ejercicio = re.id_ejercicio
+                        WHERE re.id_rutina = r.id_rutina
+                          AND e.grupo_muscular IS NOT NULL
+                          AND e.grupo_muscular <> \'\'
+                        GROUP BY e.grupo_muscular
+                        ORDER BY COUNT(*) DESC, MIN(re.orden) ASC
+                        LIMIT 1
+                    ) AS categoria
              FROM rutinas r
              JOIN entrenadores e ON e.id_entrenador = r.id_entrenador
              JOIN usuarios ue ON ue.id_usuario = e.id_usuario
@@ -91,14 +112,22 @@ class RutinaModel {
     public function ejerciciosDe(int $idRutina): array {
         $stmt = $this->db->prepare(
             'SELECT re.id_rutina_ejercicio, re.id_rutina, re.id_ejercicio, re.orden, re.notas,
-                    e.nombre, e.grupo_muscular, e.descripcion
+                    e.nombre, e.grupo_muscular, e.descripcion, e.imagen
              FROM rutina_ejercicios re
              JOIN ejercicios e ON e.id_ejercicio = re.id_ejercicio
              WHERE re.id_rutina = :id
              ORDER BY re.orden ASC, re.id_rutina_ejercicio ASC'
         );
         $stmt->execute(['id' => $idRutina]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return array_map(static function ($fila) {
+            if (empty($fila['imagen'])) {
+                $fila['imagen'] = EjercicioModel::rutaGif(
+                    (string) ($fila['nombre'] ?? ''),
+                    (string) ($fila['grupo_muscular'] ?? '')
+                );
+            }
+            return $fila;
+        }, $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function seriesDe(int $idRutinaEjercicio): array {
@@ -319,10 +348,8 @@ class RutinaModel {
 
         $st3 = $this->db->prepare(
             'SELECT COUNT(*) AS total
-             FROM socios s
-             JOIN usuarios u ON u.id_usuario = s.id_usuario
-             WHERE s.id_entrenador = :id
-               AND DATE_ADD(u.fecha_alta, INTERVAL 1 YEAR) < NOW()'
+             FROM socios
+             WHERE id_entrenador = :id AND membresia_activa = 0'
         );
         $st3->execute(['id' => $idEntrenador]);
         $vencidas = (int) $st3->fetch(\PDO::FETCH_ASSOC)['total'];
@@ -338,10 +365,7 @@ class RutinaModel {
         $socios = (int) $this->db->query('SELECT COUNT(*) AS t FROM socios')->fetch(\PDO::FETCH_ASSOC)['t'];
         $rutinas = (int) $this->db->query('SELECT COUNT(*) AS t FROM rutinas')->fetch(\PDO::FETCH_ASSOC)['t'];
         $vencidas = (int) $this->db->query(
-            'SELECT COUNT(*) AS t
-             FROM socios s
-             JOIN usuarios u ON u.id_usuario = s.id_usuario
-             WHERE DATE_ADD(u.fecha_alta, INTERVAL 1 YEAR) < NOW()'
+            'SELECT COUNT(*) AS t FROM socios WHERE membresia_activa = 0'
         )->fetch(\PDO::FETCH_ASSOC)['t'];
         return [
             'socios_asignados' => $socios,

@@ -281,6 +281,7 @@ body.landing-page {
     width: 60px;
     height: 60px;
     min-width: 60px;
+    flex-shrink: 0;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -295,10 +296,12 @@ body.landing-page {
     box-shadow: 0 8px 16px rgba(13, 71, 132, 0.28);
 }
 
-.icon-circle img {
+.icon-circle img,
+.icon-circle svg {
     width: 28px;
     height: 28px;
     object-fit: contain;
+    display: block;
 }
 
 /* Conoce a nuestros entrenadores */
@@ -350,6 +353,7 @@ body.landing-page {
     border-radius: 20px;
     border: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    position: relative;
     height: 480px;
     overflow: visible;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -364,13 +368,25 @@ body.landing-page {
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding-bottom: 56px;
 }
 
-.plans .card-body button,
 .plans .card-body .btn {
-    margin-top: auto;
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    margin-top: 0;
     align-self: center;
     min-width: 160px;
+}
+
+.plans .card ul {
+    margin-bottom: 0;
+}
+
+.plans .card li.mb-2 {
+    margin-bottom: 0.35rem !important;
 }
 
 .plans .plan-popular {

@@ -21,6 +21,7 @@ class FitpointsModel {
                 'ALTER TABLE entrenamientos ADD COLUMN fitpoints_otorgados TINYINT(1) NOT NULL DEFAULT 0'
             );
         }
+        new RecompensaModel($db);
         $db->exec(
             'CREATE TABLE IF NOT EXISTS canjes_fitpoints (
                 id_canje INT AUTO_INCREMENT PRIMARY KEY,

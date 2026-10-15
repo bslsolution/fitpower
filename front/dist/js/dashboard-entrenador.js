@@ -24,7 +24,6 @@
     const rutinas = rutinasRes.rutinas || [];
     const ejercicios = ejerciciosRes.ejercicios || [];
     const grupos = gruposRes.grupos || [];
-    const plantillas = rutinas.filter((r) => !r.id_socio);
     const asignadas = rutinas.filter((r) => r.id_socio);
 
     function filasSocios(lista) {
@@ -35,7 +34,7 @@
                 <td>${Number(s.activo) ? `<span class="badge badge-on">${t('badge_on')}</span>` : `<span class="badge badge-off">${t('badge_off')}</span>`}</td>
                 <td>
                     <div class="row-actions">
-                        <a class="btn btn-navy btn-chip" href="#rutinas">${t('assign_routine')}</a>
+                        <a class="btn btn-navy btn-chip" href="#rutinas">${t('create_routine')}</a>
                     </div>
                 </td>
             </tr>
@@ -78,21 +77,24 @@
                         </div>
                         <a class="link-all" href="#socios">${t('see_all')}</a>
                     </div>
+                    <div class="table-scroll" id="socios-tabla">
                     <table class="table">
                         <thead><tr><th>${t('th_name')}</th><th>${t('th_email')}</th><th>${t('th_status')}</th><th>${t('th_actions')}</th></tr></thead>
                         <tbody>${filasSocios(socios.slice(0, 6))}</tbody>
                     </table>
+                    </div>
+                    <input class="table-hscroll table-hscroll-mobile-only" id="socios-barra" type="range" min="0" value="0" step="1" aria-label="${t('scroll_members')}">
                 </article>
                 <article class="card quick">
                     <h3>${t('quick_actions')}</h3>
                     <p class="muted">${t('quick_trainer_help')}</p>
-                    <button class="btn btn-navy" id="btn-nueva"><span class="plus">+</span> ${t('create_routine')}</button>
+                    <a class="btn btn-navy" href="#rutinas"><span class="plus">+</span> ${t('create_routine')}</a>
                     <a class="btn btn-navy" href="#socios"><span class="plus">+</span> ${t('see_my_members')}</a>
                     <a class="btn btn-navy" href="#ejercicios"><span class="plus">+</span> ${t('manage_exercises')}</a>
                 </article>
             </div>
         `;
-        document.getElementById('btn-nueva').addEventListener('click', crearRutina);
+        bindTablaSocios();
     }
 
     function cardsRutinas(items, vacio) {
@@ -101,7 +103,7 @@
             <div class="routine-cards">
                 ${items.map((r) => `
                     <article class="routine-card">
-                        <span class="muted">${r.id_socio ? `${r.socio_nombre} ${r.socio_apellido}` : t('template')}</span>
+                        <span class="muted">${r.socio_nombre || ''} ${r.socio_apellido || ''}</span>
                         <h3>${r.nombre}</h3>
                         <p class="muted">${r.objetivo || ''}</p>
                         <div class="row-actions">
@@ -114,39 +116,46 @@
         `;
     }
 
-    function vistaRutinas() {
-        document.getElementById('titulo-pagina').textContent = t('nav_routines');
-        const opcionesSocios = socios
+    function opcionesSociosHtml(placeholder) {
+        const opts = socios
             .slice()
             .sort((a, b) => `${a.nombre} ${a.apellido}`.localeCompare(`${b.nombre} ${b.apellido}`, I18n.locale()))
             .map((s) => `<option value="${s.id_socio}">${s.nombre} ${s.apellido}</option>`)
             .join('');
+        return `<option value="">${placeholder}</option>${opts}`;
+    }
+
+    function vistaRutinas() {
+        document.getElementById('titulo-pagina').textContent = t('nav_routines');
+        const sinSocios = !socios.length;
         contenido.innerHTML = `
             <div class="card">
-                <div class="form-inline" style="margin-bottom:16px">
-                    <div class="field"><label>${t('th_name')}</label><input id="nueva-nombre" placeholder="Full body"></div>
-                    <div class="field"><label>${t('label_goal')}</label><input id="nueva-objetivo" placeholder="Fuerza"></div>
-                    <button class="btn btn-navy" id="btn-crear">${t('create_template')}</button>
-                </div>
-                <div id="bloque-plantillas">
-                    <h3>${t('templates')}</h3>
-                    ${cardsRutinas(plantillas, t('nothing_yet'))}
-                </div>
+                <h3>${t('create_routine')}</h3>
+                <p class="muted">${t('create_routine_help')}</p>
+                ${sinSocios
+                    ? `<p class="muted">${t('no_members_trainer')}</p>`
+                    : `<div class="form-inline" style="margin-bottom:16px">
+                        <div class="field"><label>${t('th_name')}</label><input id="nueva-nombre" placeholder="Full body"></div>
+                        <div class="field"><label>${t('label_goal')}</label><input id="nueva-objetivo" placeholder="Fuerza"></div>
+                        <div class="field">
+                            <label for="nueva-socio">${t('label_member')}</label>
+                            <select id="nueva-socio" class="plain">${opcionesSociosHtml(t('pick_member_routine'))}</select>
+                        </div>
+                        <button class="btn btn-navy" id="btn-crear">${t('create_routine')}</button>
+                    </div>`}
                 <div class="routine-filter">
                     <h3>${t('assigned_to_members')}</h3>
-                    <div class="field">
+                    ${sinSocios ? '' : `<div class="field">
                         <label for="filtro-socio">${t('filter_by_member')}</label>
-                        <select id="filtro-socio" class="plain">
-                            <option value="">${t('all_members')}</option>
-                            ${opcionesSocios}
-                        </select>
-                    </div>
+                        <select id="filtro-socio" class="plain">${opcionesSociosHtml(t('all_members'))}</select>
+                    </div>`}
                 </div>
                 <div id="rutinas-asignadas"></div>
             </div>
         `;
         const pintarAsignadas = () => {
-            const idSocio = document.getElementById('filtro-socio').value;
+            const filtro = document.getElementById('filtro-socio');
+            const idSocio = filtro ? filtro.value : '';
             const items = idSocio
                 ? asignadas.filter((r) => String(r.id_socio) === String(idSocio))
                 : asignadas;
@@ -170,21 +179,49 @@
                 });
             });
         };
-        document.getElementById('filtro-socio').addEventListener('change', pintarAsignadas);
+        document.getElementById('filtro-socio')?.addEventListener('change', pintarAsignadas);
         pintarAsignadas();
-        document.getElementById('btn-crear').addEventListener('click', crearRutina);
+        document.getElementById('btn-crear')?.addEventListener('click', crearRutina);
+    }
+
+    function bindTablaSocios() {
+        const caja = document.getElementById('socios-tabla');
+        const barra = document.getElementById('socios-barra');
+        if (!caja || !barra) return;
+        const maxScroll = () => Math.max(0, caja.scrollWidth - caja.clientWidth);
+        const syncBarra = () => {
+            const max = maxScroll();
+            barra.max = String(Math.max(max, 1));
+            barra.value = String(Math.min(caja.scrollLeft, max));
+            barra.disabled = max <= 1;
+        };
+        caja.addEventListener('scroll', () => {
+            barra.value = String(caja.scrollLeft);
+        }, { passive: true });
+        barra.addEventListener('input', () => {
+            caja.scrollLeft = Number(barra.value);
+        });
+        if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(syncBarra).observe(caja);
+        }
+        window.addEventListener('resize', syncBarra);
+        requestAnimationFrame(syncBarra);
     }
 
     function vistaSocios() {
         document.getElementById('titulo-pagina').textContent = t('my_members');
         contenido.innerHTML = `
             <article class="card">
+                <div class="table-scroll" id="socios-tabla">
                 <table class="table">
                     <thead><tr><th>${t('th_name')}</th><th>${t('th_email')}</th><th>${t('th_status')}</th><th>${t('th_actions')}</th></tr></thead>
                     <tbody>${filasSocios(socios)}</tbody>
                 </table>
+                </div>
+                <input class="table-hscroll table-hscroll-mobile-only" id="socios-barra" type="range" min="0" value="0" step="1" aria-label="${t('scroll_members')}">
             </article>
         `;
+        bindTablaSocios();
     }
 
     function vistaEjercicios() {
@@ -212,9 +249,14 @@
                 </div>
                 ${grupos.length ? '' : `<p class="muted" style="margin-top:12px">${t('no_groups_trainer')}</p>`}
                 <table class="table" style="margin-top:16px">
-                    <thead><tr><th>${t('th_name')}</th><th>${t('th_group')}</th><th></th></tr></thead>
+                    <thead><tr><th></th><th>${t('th_name')}</th><th>${t('th_group')}</th><th></th></tr></thead>
                     <tbody>
-                        ${ejercicios.map((e) => `<tr><td>${e.nombre}</td><td>${e.grupo_muscular || ''}</td><td><button class="btn btn-ghost btn-small" data-del="${e.id_ejercicio}">${t('delete_btn')}</button></td></tr>`).join('')}
+                        ${ejercicios.map((e) => `<tr>
+                            <td><img class="exercise-gif-thumb" src="${e.imagen || '../imagenes/ejercicios/sentadilla.gif'}${String(e.imagen || '').includes('?') ? '' : '?v=fp-rack'}" alt=""></td>
+                            <td>${e.nombre}</td>
+                            <td>${e.grupo_muscular || ''}</td>
+                            <td><button class="btn btn-ghost btn-small" data-del="${e.id_ejercicio}">${t('delete_btn')}</button></td>
+                        </tr>`).join('')}
                     </tbody>
                 </table>
             </article>
@@ -251,11 +293,18 @@
     }
 
     async function crearRutina() {
-        const campoNombre = document.getElementById('nueva-nombre');
-        const nombre = campoNombre ? campoNombre.value.trim() : t('new_routine');
-        if (!nombre) return;
-        const objetivo = ((document.getElementById('nueva-objetivo') || {}).value || '').trim();
-        const res = await API.post('/rutinas', { nombre, objetivo });
+        const nombre = (document.getElementById('nueva-nombre')?.value || '').trim();
+        if (!nombre) {
+            alert(t('prompt_routine'));
+            return;
+        }
+        const idSocio = Number(document.getElementById('nueva-socio')?.value || 0);
+        if (!idSocio) {
+            alert(t('pick_member_routine'));
+            return;
+        }
+        const objetivo = (document.getElementById('nueva-objetivo')?.value || '').trim();
+        const res = await API.post('/rutinas', { nombre, objetivo, id_socio: idSocio });
         if (res.status !== 'ok') {
             alert(I18n.api(res.message));
             return;

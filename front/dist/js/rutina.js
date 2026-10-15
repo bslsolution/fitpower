@@ -29,7 +29,6 @@
     const contenido = document.getElementById('contenido');
     let ejercicios = data.ejercicios || [];
     const catalogo = soloLectura ? { ejercicios: [] } : await API.get('/ejercicios');
-    const socios = soloLectura ? { socios: [] } : await API.get('/socios');
     let idEjercicioElegido = null;
     const GIF_BASE = '../imagenes/ejercicios/';
     const crono = { running: false, startedAt: 0, accumulated: 0, tick: null };
@@ -44,26 +43,41 @@
     }
 
     function gifDeEjercicio(ej) {
-        if (ej.url_gif) return ej.url_gif;
+        const v = '?v=fp-rack';
+        if (ej.imagen) return ej.imagen + (String(ej.imagen).includes('?') ? '' : v);
+        if (ej.url_gif) return ej.url_gif + (String(ej.url_gif).includes('?') ? '' : v);
         const n = normalizar(ej.nombre);
         const reglas = [
-            { k: ['sentadilla', 'squat'], f: 'sentadilla.gif' },
+            { k: ['sentadilla bulgara'], f: 'sentadilla-bulgara.gif' },
+            { k: ['press inclinado con mancuerna'], f: 'press-inclinado-mancuernas.gif' },
+            { k: ['press inclinado'], f: 'press-inclinado.gif' },
             { k: ['press banca', 'press de banca', 'bench'], f: 'press-banca.gif' },
+            { k: ['remo en t'], f: 'remo-t.gif' },
+            { k: ['remo con mancuerna'], f: 'remo-mancuerna.gif' },
+            { k: ['curl martillo', 'martillo'], f: 'curl-martillo.gif' },
+            { k: ['elevaciones laterales', 'laterales'], f: 'elevaciones-laterales.gif' },
+            { k: ['press militar', 'militar'], f: 'press-militar.gif' },
+            { k: ['press frances', 'frances'], f: 'press-frances.gif' },
+            { k: ['cuadriceps'], f: 'extension-cuadriceps.gif' },
+            { k: ['peck deck', 'peck'], f: 'peck-deck.gif' },
+            { k: ['jalon'], f: 'jalon-pecho.gif' },
+            { k: ['polea'], f: 'triceps-polea.gif' },
+            { k: ['sentadilla', 'squat'], f: 'sentadilla.gif' },
             { k: ['remo'], f: 'remo.gif' },
             { k: ['plancha', 'plank'], f: 'plancha.gif' },
+            { k: ['fondos'], f: 'fondos.gif' },
             { k: ['peso muerto', 'deadlift'], f: 'peso-muerto.gif' },
-            { k: ['curl', 'biceps'], f: 'curl.gif' },
-            { k: ['militar', 'hombro', 'overhead', 'laterales'], f: 'press-militar.gif' },
+            { k: ['curl', 'biceps'], f: 'curl-martillo.gif' },
             { k: ['dominada', 'pull'], f: 'dominadas.gif' },
-            { k: ['flexion', 'push', 'fondos'], f: 'flexiones.gif' },
-            { k: ['abdominal', 'crunch', 'sit'], f: 'crunch.gif' },
+            { k: ['flexion', 'push'], f: 'flexiones.gif' },
+            { k: ['abdominal', 'crunch'], f: 'crunch.gif' },
             { k: ['elevacion', 'leg raise'], f: 'elevaciones.gif' },
             { k: ['burpee'], f: 'burpees.gif' },
             { k: ['extension'], f: 'extensiones.gif' },
             { k: ['rodilla', 'high knee'], f: 'rodillas.gif' }
         ];
         const hit = reglas.find((r) => r.k.some((k) => n.includes(k)));
-        if (hit) return GIF_BASE + hit.f;
+        if (hit) return GIF_BASE + hit.f + v;
         const g = normalizar(ej.grupo_muscular);
         const porGrupo = {
             pierna: 'sentadilla.gif',
@@ -72,11 +86,11 @@
             core: 'plancha.gif',
             hombros: 'press-militar.gif',
             hombro: 'press-militar.gif',
-            brazos: 'curl.gif',
-            biceps: 'curl.gif',
-            triceps: 'flexiones.gif'
+            brazos: 'curl-martillo.gif',
+            biceps: 'curl-martillo.gif',
+            triceps: 'triceps-polea.gif'
         };
-        return GIF_BASE + (porGrupo[g] || 'sentadilla.gif');
+        return GIF_BASE + (porGrupo[g] || 'sentadilla.gif') + v;
     }
 
     function formatoTiempo(ms) {
@@ -258,8 +272,11 @@
         }
         lista.innerHTML = items.map((e, i) => `
             <li data-id="${e.id_ejercicio}" class="${i === 0 ? 'active' : ''}">
-                <strong>${e.nombre}</strong>
-                <span class="muted">${e.grupo_muscular || ''}</span>
+                <img src="${gifDeEjercicio(e)}" alt="" class="exercise-search-gif">
+                <span>
+                    <strong>${e.nombre}</strong>
+                    <span class="muted">${e.grupo_muscular || ''}</span>
+                </span>
             </li>
         `).join('');
     }
@@ -395,7 +412,7 @@
             </section>
             <p class="muted" style="margin:-4px 0 16px">${t('finish_help')}</p>` : ''}
             <article class="card">
-                <p class="muted">${data.rutina.objetivo || ''} ${data.rutina.socio_nombre ? t('assigned_to', { name: data.rutina.socio_nombre + ' ' + data.rutina.socio_apellido }) : t('template_label')}</p>
+                <p class="muted">${data.rutina.objetivo || ''} ${data.rutina.socio_nombre ? t('assigned_to', { name: data.rutina.socio_nombre + ' ' + data.rutina.socio_apellido }) : ''}</p>
                 ${soloLectura ? '' : `
                 <div class="form-inline" style="margin-bottom:16px">
                     <div class="field"><label>${t('th_name')}</label><input id="r-nombre" value="${data.rutina.nombre}"></div>
@@ -412,14 +429,6 @@
                     </div>
                     <div class="field"><label>${t('notes')}</label><input id="r-notas" placeholder="${t('notes_ph')}"></div>
                     <button class="btn btn-primary btn-small" id="r-add-ej">${t('add_to_routine')}</button>
-                </div>
-                <div class="form-inline" style="margin-bottom:16px">
-                    <div class="field"><label>${t('assign_copy')}</label>
-                        <select id="r-socio" class="plain">
-                            ${(socios.socios || []).map((s) => `<option value="${s.id_socio}">${s.nombre} ${s.apellido}</option>`).join('')}
-                        </select>
-                    </div>
-                    <button class="btn btn-navy btn-small" id="r-asignar">${t('assign')}</button>
                 </div>`}
                 ${bloques || `<p class="muted">${t('no_exercises')}</p>`}
                 ${soloLectura && bloques ? `
@@ -482,16 +491,6 @@
                 });
                 if (res.status !== 'ok') alert(I18n.api(res.message));
                 else recargar();
-            });
-        }
-        const asignar = document.getElementById('r-asignar');
-        if (asignar) {
-            asignar.addEventListener('click', async () => {
-                const res = await API.post('/rutinas/' + id + '/asignar', {
-                    id_socio: Number(document.getElementById('r-socio').value)
-                });
-                if (res.status !== 'ok') alert(I18n.api(res.message));
-                else location.href = FRONT.rutina + '?id=' + res.rutina.id_rutina;
             });
         }
         contenido.querySelectorAll('[data-up]').forEach((btn) => {

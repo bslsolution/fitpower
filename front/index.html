@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="./dist/css/landing.css?v=keep-legal">
+    <link rel="stylesheet" href="./dist/css/landing.css?v=plans-btn">
 </head>
 
 <body class="landing-page">
@@ -177,12 +177,12 @@
                             <div class="card-body">
                                 <div class="icon-circle mx-auto mb-3"><img src="./dist/imagenes/shoe.png" alt=""></div>
                                 <h5 class="fw-bold" data-i18n="plan_basic">Básico</h5>
-                                <p class="fw-semibold" data-i18n="plan_basic_p">Ideal para comenzar tu camino fitness</p>
+                                <p class="fw-semibold" data-i18n="plan_basic_p">Ideal para comenzar por tu cuenta</p>
                                 <h3 class="fw-bold text-primary mb-4">$1200 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
                                 <ul class="list-unstyled text-start">
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_basic">Seguimiento básico</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la plataforma</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_starter">Rutinas de inicio</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_log">Registro de entrenamientos</span></li>
                                 </ul>
                                 <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
                             </div>
@@ -199,9 +199,9 @@
                                 <h3 class="fw-bold text-primary mb-4">$1600 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
                                 <ul class="list-unstyled text-start">
                                     <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_advanced">Seguimiento avanzado</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Asesoría con un entrenador</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Entrenador asignado</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_progress">Seguimiento de progreso</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_fitpoints">FitPoints por cada rutina</span></li>
                                 </ul>
                                 <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
                             </div>
@@ -211,15 +211,17 @@
                     <div class="col-md-4 mb-4">
                         <div class="card p-4">
                             <div class="card-body">
-                                <div class="icon-circle mx-auto mb-3"><img src="./dist/imagenes/crown.png?v=transp" alt=""></div>
+                                <div class="icon-circle mx-auto mb-3">
+                                    <img src="./dist/imagenes/crown-white.svg?v=elite-fix" alt="">
+                                </div>
                                 <h5 class="fw-bold" data-i18n="plan_elite">Elite</h5>
                                 <p class="fw-semibold" data-i18n="plan_elite_p">El máximo nivel de acompañamiento</p>
                                 <h3 class="fw-bold text-primary mb-4">$2000 <span class="fs-6" data-i18n="per_month">/mes</span></h3>
                                 <ul class="list-unstyled text-start">
                                     <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_routines">Rutinas personalizadas</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_advanced">Seguimiento avanzado</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Asesoría con un entrenador</span></li>
-                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_access">Acceso a la página</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_coach">Entrenador asignado</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_weekly">Ajustes semanales de rutina</span></li>
+                                    <li class="mb-2"><span class="plan-check">✔</span> <span data-i18n="feat_elite_fp">FitPoints extra y recompensas</span></li>
                                 </ul>
                                 <a href="/front/dist/pages/login.html" class="btn btn-primary rounded-pill mt-4" data-i18n="choose_plan">Elegir plan</a>
                             </div>
@@ -346,7 +348,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="./dist/js/i18n.js?v=keep-legal"></script>
+    <script src="./dist/js/i18n.js?v=plans-size"></script>
     <script src="./dist/js/loader.js"></script>
 </body>
 

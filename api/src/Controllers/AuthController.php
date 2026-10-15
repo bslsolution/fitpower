@@ -45,16 +45,28 @@ class AuthController {
 
     public function me() {
         $usuario = Auth::exigir();
+        $modelo = new UsuarioModel($this->db);
+        $fila = $modelo->porId((int) ($usuario['id_usuario'] ?? 0));
+        if ($fila) {
+            $usuario = array_merge($usuario, $modelo->publico($fila));
+        }
         if (($usuario['rol'] ?? '') === 'socio' && !empty($usuario['id_socio'])) {
             $fp = new \App\Models\FitpointsModel($this->db);
             $usuario['fitpoints'] = $fp->puntosDeSocio((int) $usuario['id_socio']);
-            Auth::guardar($usuario);
         }
         $notif = new \App\Models\NotificacionModel($this->db);
         $usuario['notificaciones_nuevas'] = $notif->contarNuevas(
             (string) ($usuario['rol'] ?? ''),
             (int) ($usuario['id_usuario'] ?? 0)
         );
+        Auth::guardar($usuario);
         ApiResponse::ok(['usuario' => $usuario]);
+    }
+
+    public function registrarVisita() {
+        $usuario = Auth::exigir();
+        $modelo = new UsuarioModel($this->db);
+        $modelo->registrarVisitaDashboard((int) ($usuario['id_usuario'] ?? 0));
+        ApiResponse::ok(['registrada' => true]);
     }
 }

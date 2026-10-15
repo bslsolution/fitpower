@@ -7,6 +7,46 @@ class RecompensaModel {
     public function __construct($db) {
         $this->db = $db;
         $this->asegurarTabla();
+        self::asegurarRecompensasDemo($db);
+    }
+
+    public static function asegurarRecompensasDemo($db): void {
+        static $hecho = false;
+        if ($hecho) {
+            return;
+        }
+        $hecho = true;
+
+        $demo = [
+            ['nombre' => 'Camiseta', 'costo' => 100, 'imagen' => 'camiseta.png', 'desc' => 'Una camiseta personalizada de nuestro gimnasio.'],
+            ['nombre' => 'Botella', 'costo' => 50, 'imagen' => 'botella.png', 'desc' => 'Botella para hidratarte en el entrenamiento.'],
+            ['nombre' => 'Gorra', 'costo' => 120, 'imagen' => 'gorra.png', 'desc' => 'Gorra FitPower para el gym o la calle.'],
+            ['nombre' => 'Mochila', 'costo' => 300, 'imagen' => 'mochila.png', 'desc' => 'Mochila para llevar tu ropa y accesorios.'],
+            ['nombre' => 'Llavero', 'costo' => 50, 'imagen' => 'llavero.png', 'desc' => 'Llavero de merchandising FitPower.'],
+            ['nombre' => 'Descuento', 'costo' => 500, 'imagen' => 'descuento.png', 'desc' => 'Descuento para tu próxima mensualidad.'],
+        ];
+
+        try {
+            $existe = $db->prepare('SELECT id_recompensa FROM recompensas_fitpoints WHERE nombre = :n LIMIT 1');
+            $ins = $db->prepare(
+                'INSERT INTO recompensas_fitpoints (nombre, costo_puntos, imagen, descripcion)
+                 VALUES (:nombre, :costo, :imagen, :desc)'
+            );
+            foreach ($demo as $fila) {
+                $existe->execute(['n' => $fila['nombre']]);
+                if ($existe->fetch()) {
+                    continue;
+                }
+                $ins->execute([
+                    'nombre' => $fila['nombre'],
+                    'costo' => $fila['costo'],
+                    'imagen' => '/front/dist/imagenes/recompensas/' . $fila['imagen'],
+                    'desc' => $fila['desc'],
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Si el seed falla, el catálogo se puede cargar a mano desde el admin.
+        }
     }
 
     public function asegurarTabla(): void {

@@ -13,7 +13,12 @@ const AuthUI = {
             location.href = FRONT.dashboards[res.usuario.rol] || FRONT.login;
             return null;
         }
+        this.registrarVisita();
         return res.usuario;
+    },
+
+    registrarVisita() {
+        API.post('/me/visita', {}).catch(() => {});
     },
 
     irSegunRol(usuario) {
@@ -40,12 +45,18 @@ const AuthUI = {
             gente: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 19c.8-3.2 3.3-5 6-5s5.2 1.8 6 5M14 19c.4-2 1.8-3.5 3.5-3.5 1.4 0 2.6.8 3.2 2"/></svg>',
             config: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M4.9 6.3l1.4 1.4M17.7 16.3l1.4 1.4M3 12h2M19 12h2M4.9 17.7l1.4-1.4M17.7 7.7l1.4-1.4"/></svg>',
             progreso: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16"/><path d="M7 14l4-5 3 3 5-7"/></svg>',
+            usuarios: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M6 17c.5-1.6 1.7-2.5 3-2.5s2.5.9 3 2.5"/><path d="M14 9h5M14 13h4"/></svg>',
             salir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 7V5a2 2 0 0 1 2-2h7v18h-7a2 2 0 0 1-2-2v-2"/><path d="M4 12h11M12 8l4 4-4 4"/></svg>'
         };
         if (nombre === 'fitpoints') {
             return `<span class="nav-icon nav-fp">
                 <img class="fp-logo-white" src="/front/dist/imagenes/FitPoints-white.png" alt="">
                 <img class="fp-logo-navy" src="/front/dist/imagenes/FitPoints-navy.png" alt="">
+            </span>`;
+        }
+        if (nombre === 'socios') {
+            return `<span class="nav-icon nav-user">${extra}
+                <img src="/front/dist/imagenes/user.png" alt="">
             </span>`;
         }
         return `<span class="nav-icon">${svg[nombre] || ''}${extra}</span>`;
@@ -69,15 +80,22 @@ const AuthUI = {
         };
 
         return `
-            <aside class="sidebar">
+            <aside class="sidebar" id="app-sidebar">
                 <a class="logo" href="/front/index.html">
                     <img src="/front/dist/imagenes/FitPoints-white.png" alt=""> FitPower
                 </a>
                 <nav class="side-nav">
                     ${item('inicio', base, 'inicio', I18n.t('nav_home'))}
-                    ${item('rutinas', base + '#rutinas', 'rutinas', I18n.t('nav_routines'))}
+                    ${usuario.rol === 'administrador'
+                        ? item('socios', base + '#socios', 'socios', I18n.t('my_members'))
+                          + item('usuarios', base + '#usuarios', 'usuarios', I18n.t('users_title'))
+                        : item('rutinas', base + '#rutinas', 'rutinas', I18n.t('nav_routines'))}
                     ${item('notificaciones', base + '#notificaciones', 'campana', I18n.t('nav_notif'))}
-                    ${item('entrenadores', base + '#entrenadores', 'gente', I18n.t('nav_coaches'))}
+                    ${usuario.rol === 'entrenador'
+                        ? item('entrenadores', base + '#entrenadores', 'socios', I18n.t('my_members'))
+                        : usuario.rol === 'socio'
+                            ? item('entrenadores', base + '#entrenadores', 'gente', I18n.t('nav_coaches'))
+                            : ''}
                     ${usuario.rol === 'administrador' ? item('fitpoints', base + '#fitpoints', 'fitpoints', I18n.t('nav_fitpoints')) : ''}
                     ${usuario.rol === 'socio' ? item('progreso', base + '#progreso', 'progreso', I18n.t('nav_progress')) : ''}
                     ${usuario.rol === 'socio' ? item('fitpoints', base + '#fitpoints', 'fitpoints', I18n.t('nav_fitpoints')) : ''}
@@ -88,9 +106,15 @@ const AuthUI = {
                     <button type="button" id="btn-salir">${this.icono('salir')} ${I18n.t('nav_logout')}</button>
                 </nav>
             </aside>
+            <div class="nav-overlay" id="nav-overlay" hidden></div>
             <main class="app-main">
                 <header class="topbar">
-                    <h1 id="titulo-pagina">${I18n.t('nav_home')}</h1>
+                    <div class="topbar-left">
+                        <button type="button" class="menu-toggle" id="btn-menu" aria-expanded="false" aria-controls="app-sidebar" aria-label="${I18n.t('menu')}">
+                            <span></span><span></span><span></span>
+                        </button>
+                        <h1 id="titulo-pagina">${I18n.t('nav_home')}</h1>
+                    </div>
                     <div class="topbar-actions">
                     ${usuario.rol === 'socio' ? `<a class="fp-points-chip" href="${base}#fitpoints" title="${I18n.t('nav_fitpoints')}">
                         <img src="/front/dist/imagenes/FitPoints-navy.png" alt="">
@@ -99,7 +123,7 @@ const AuthUI = {
                     <div class="user-menu">
                         <button type="button" class="user-chip" id="user-menu-btn" aria-expanded="false" aria-haspopup="true">
                             <div class="avatar">${this.iniciales(usuario)}</div>
-                            <div>
+                            <div class="user-chip-text">
                                 <strong>${usuario.nombre} ${usuario.apellido}</strong>
                                 <small>${I18n.role(usuario.rol)}</small>
                             </div>
@@ -121,6 +145,49 @@ const AuthUI = {
             btn.addEventListener('click', () => this.logout());
         });
         this.bindUserMenu();
+        this.bindNavDrawer();
+    },
+
+    bindNavDrawer() {
+        const app = document.getElementById('app');
+        const btn = document.getElementById('btn-menu');
+        const sidebar = document.getElementById('app-sidebar');
+        const overlay = document.getElementById('nav-overlay');
+        if (!app || !btn || !sidebar) return;
+
+        const esMobile = () => window.matchMedia('(max-width: 900px)').matches;
+
+        const setOpen = (open) => {
+            if (!esMobile()) {
+                open = false;
+            }
+            app.classList.toggle('is-nav-open', open);
+            document.body.classList.toggle('is-nav-open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            btn.setAttribute('aria-label', I18n.t(open ? 'close_menu' : 'menu'));
+            if (overlay) overlay.hidden = !open;
+            if (esMobile()) {
+                sidebar.setAttribute('aria-hidden', open ? 'false' : 'true');
+            } else {
+                sidebar.removeAttribute('aria-hidden');
+            }
+        };
+
+        setOpen(false);
+        btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            setOpen(!app.classList.contains('is-nav-open'));
+        });
+        overlay?.addEventListener('click', () => setOpen(false));
+        sidebar.querySelectorAll('a').forEach((a) => {
+            a.addEventListener('click', () => setOpen(false));
+        });
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape') setOpen(false);
+        });
+        window.addEventListener('resize', () => {
+            if (!esMobile()) setOpen(false);
+        });
     },
 
     bindUserMenu() {

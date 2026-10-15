@@ -5,7 +5,7 @@
 
     const hash = AuthUI.hash();
     const matchEnt = hash.match(/^entrenamiento-(\d+)$/);
-    const activo = (matchEnt || ['rutinas', 'notificaciones', 'entrenadores', 'progreso', 'fitpoints', 'config', 'mensaje'].includes(hash))
+    const activo = (matchEnt || ['rutinas', 'notificaciones', 'entrenadores', 'progreso', 'fitpoints', 'config'].includes(hash))
         ? (matchEnt ? 'progreso' : hash)
         : 'inicio';
     document.getElementById('app').innerHTML = AuthUI.shell(usuario, activo);
@@ -17,18 +17,40 @@
     const contenido = document.getElementById('contenido');
     const activa = data.membresia === 'activa';
 
+    function claveCategoria(r) {
+        const texto = `${r.nombre || ''} ${r.objetivo || ''} ${r.categoria || ''}`
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+        const reglas = [
+            ['pierna', 'pierna'], ['leg', 'pierna'], ['sentadilla', 'pierna'], ['glute', 'pierna'],
+            ['pecho', 'pecho'], ['chest', 'pecho'], ['press banca', 'pecho'],
+            ['espalda', 'espalda'], ['back', 'espalda'], ['remo', 'espalda'], ['dominada', 'espalda'],
+            ['core', 'core'], ['abdomen', 'core'], ['plancha', 'core'],
+            ['hombro', 'hombros'], ['shoulder', 'hombros'],
+            ['brazo', 'brazos'], ['bicep', 'brazos'], ['tricep', 'brazos'], ['curl', 'brazos']
+        ];
+        const hit = reglas.find(([k]) => texto.includes(k));
+        return hit ? hit[1] : 'full';
+    }
+
+    function tarjetaRutina(r, extraHtml = '') {
+        const fondo = `../imagenes/categorias/${claveCategoria(r)}.jpg`;
+        return `
+            <article class="routine-card has-cover" style="--cover:url('${fondo}')">
+                <h3>${r.nombre}</h3>
+                <p class="muted">${r.objetivo || t('assigned_routine')}</p>
+                ${extraHtml}
+                <a class="btn btn-primary btn-small" href="${FRONT.rutina}?id=${r.id_rutina}">${t('see_routine')}</a>
+            </article>
+        `;
+    }
+
     function vistaInicio() {
         document.getElementById('titulo-pagina').textContent = t('nav_home');
         const preview = rutinas.slice(0, 3);
         const cards = preview.length
-            ? preview.map((r) => `
-                <article class="routine-card">
-                    <img src="../imagenes/mancuerna-negro.png" class="mini-icon" alt="">
-                    <h3>${r.nombre}</h3>
-                    <p class="muted">${r.objetivo || t('assigned_routine')}</p>
-                    <a class="btn btn-primary btn-small" href="${FRONT.rutina}?id=${r.id_rutina}">${t('see_routine')}</a>
-                </article>
-            `).join('')
+            ? preview.map((r) => tarjetaRutina(r)).join('')
             : `<p class="muted">${t('no_routines_yet')}</p>`;
 
         contenido.innerHTML = `
@@ -45,7 +67,7 @@
                 <article class="card status-card">
                     <h3>${t('membership_status')}</h3>
                     <div class="membership ${activa ? '' : 'status-off'}">
-                        <div class="check">${activa ? '✓' : '!'}</div>
+                        <div class="check">${activa ? '✓' : '✕'}</div>
                         <div>
                             <strong>${activa ? t('membership_on') : t('membership_off')}</strong>
                             <p class="muted">${activa ? t('membership_ok') : t('membership_bad')}</p>
@@ -65,17 +87,14 @@
                             <p class="muted">${entrenador ? (entrenador.especialidad || t('personal_trainer')) : t('coach_pending')}</p>
                         </div>
                     </div>
-                    <div class="card-actions">
-                        ${entrenador ? `<a class="btn btn-navy btn-small" href="#mensaje">${t('send_message')}</a>` : ''}
-                    </div>
                 </article>
                 <article class="card photo-card">
-                    <h3>${rutinas[0] ? rutinas[0].nombre : t('your_routines')}</h3>
-                    <p>${rutinas[0] ? (rutinas[0].objetivo || '') : t('start_when_assigned')}</p>
-                    ${rutinas[0] ? `<a class="btn btn-primary btn-small" href="${FRONT.rutina}?id=${rutinas[0].id_rutina}">${t('see_my_routines')}</a>` : ''}
+                    <h3>${t('routines_card_title')}</h3>
+                    <p>${rutinas.length ? t('routines_card_help') : t('start_when_assigned')}</p>
+                    <a class="btn btn-primary btn-small" href="#rutinas">${t('see_my_routines')}</a>
                 </article>
             </div>
-            <section class="section-block" id="rutinas">
+            <section class="section-block" id="rutinas-preview">
                 <div class="card-head">
                     <h3>${t('nav_routines')}</h3>
                     <a class="link-all" href="#rutinas">${t('see_all_short')}</a>
@@ -89,15 +108,10 @@
         document.getElementById('titulo-pagina').textContent = t('nav_routines');
         contenido.innerHTML = `
             <div class="routine-cards">
-                ${rutinas.length ? rutinas.map((r) => `
-                    <article class="routine-card">
-                        <img src="../imagenes/mancuerna-negro.png" class="mini-icon" alt="">
-                        <h3>${r.nombre}</h3>
-                        <p class="muted">${r.objetivo || ''}</p>
-                        <p class="muted">${r.entrenador_nombre || ''} ${r.entrenador_apellido || ''}</p>
-                        <a class="btn btn-primary btn-small" href="${FRONT.rutina}?id=${r.id_rutina}">${t('see_routine')}</a>
-                    </article>
-                `).join('') : `<p class="muted">${t('no_routines_yet')}</p>`}
+                ${rutinas.length ? rutinas.map((r) => tarjetaRutina(
+                    r,
+                    `<p class="muted">${r.entrenador_nombre || ''} ${r.entrenador_apellido || ''}</p>`
+                )).join('') : `<p class="muted">${t('no_routines_yet')}</p>`}
             </div>
         `;
     }
@@ -115,24 +129,6 @@
                 </div>
             </article>
         ` : `<article class="card"><p class="muted">${t('no_coach')}</p></article>`;
-    }
-
-    function vistaMensaje() {
-        document.getElementById('titulo-pagina').textContent = t('message_soon_title');
-        contenido.innerHTML = `
-            <article class="card coming-soon">
-                <div class="notify-icon notify-icon--purple" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-                        <path d="m3 7 9 6 9-6"></path>
-                    </svg>
-                </div>
-                <h2>${t('message_soon_title')}</h2>
-                <p>${t('message_soon')}</p>
-                <p class="muted">${t('message_soon_help')}</p>
-                <a class="btn btn-navy btn-small" href="#">${t('back')}</a>
-            </article>
-        `;
     }
 
     function fechaCorta(valor) {
@@ -299,7 +295,6 @@
         rutinas: vistaRutinas,
         notificaciones: () => AuthUI.vistaNotificaciones(),
         entrenadores: vistaEntrenadores,
-        mensaje: vistaMensaje,
         progreso: vistaProgreso,
         fitpoints: vistaFitPoints,
         config: () => AuthUI.vistaConfig(usuario)

@@ -1,16 +1,20 @@
 const FitLoader = {
     started: Date.now(),
+    hidden: false,
 
     hide() {
+        if (this.hidden) return;
         const el = document.getElementById('fp-loader');
-        if (!el || el.classList.contains('is-done')) return;
-        const wait = Math.max(0, 450 - (Date.now() - this.started));
+        if (!el || el.classList.contains('is-done')) {
+            this.hidden = true;
+            return;
+        }
+        this.hidden = true;
+        const wait = Math.max(0, 300 - (Date.now() - this.started));
         setTimeout(() => el.classList.add('is-done'), wait);
     }
 };
 
-window.addEventListener('load', () => {
-    if (document.body.classList.contains('landing-page') || document.body.classList.contains('login-page')) {
-        FitLoader.hide();
-    }
-});
+document.addEventListener('DOMContentLoaded', () => FitLoader.hide());
+window.addEventListener('load', () => FitLoader.hide());
+setTimeout(() => FitLoader.hide(), 1200);

@@ -113,8 +113,18 @@ Contraseña de todos: `password`
 | Email | Rol |
 | --- | --- |
 | `admin@gym.local` | administrador |
-| `entrenador@gym.local` | entrenador |
-| `socio@gym.local` | socio |
+| `admin2@gym.local` | administrador (Bruno Silva) |
+| `admin3@gym.local` | administrador (Carla Gómez) |
+| `entrenador@gym.local` | entrenador (Elena) |
+| `martin.perez@gym.local` | entrenador |
+| `camila.torres@gym.local` | entrenador |
+| `lucas.ferrari@gym.local` | entrenador |
+| `sofia.ramirez@gym.local` | entrenador |
+| `diego.alvarez@gym.local` | entrenador |
+| `socio@gym.local` | socio (Santiago) |
+| `valentina.rossi@gym.local` … `ignacio.pintos@gym.local` | 20 socios extra |
+
+Hay 3 administradores, 6 entrenadores y 21 socios. Todos usan la misma contraseña.
 
 ## 8. Pantallas (carpeta `assets/`)
 

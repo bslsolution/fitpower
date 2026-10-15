@@ -61,15 +61,12 @@ class NotificacionController {
                 'nombre' => $s['nombre'] ?? '',
                 'apellido' => $s['apellido'] ?? '',
             ];
-            if ($idUser > 0 && !$notif->existeNueva('socio', $tipo, $idUser, $idSocio)) {
-                $notif->crear('socio', $tipo, $base + ['para' => 'socio'], $idUser);
-                $n++;
+            if ($idUser <= 0) {
+                continue;
             }
-            $idEnt = (int) ($s['id_usuario_entrenador'] ?? 0);
-            if ($idEnt > 0 && !$notif->existeNueva('entrenador', $tipo, $idEnt, $idSocio)) {
-                $notif->crear('entrenador', $tipo, $base + ['para' => 'entrenador'], $idEnt);
-                $n++;
-            }
+            $notif->borrarNuevaTipo('socio', $tipo, $idUser);
+            $notif->crear('socio', $tipo, $base + ['para' => 'socio'], $idUser);
+            $n++;
         }
         return $n;
     }

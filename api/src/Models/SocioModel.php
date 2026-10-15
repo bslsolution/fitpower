@@ -6,6 +6,16 @@ class SocioModel {
 
     public function __construct($db) {
         $this->db = $db;
+        try {
+            UsuarioModel::asegurarColumnaMembresia($db);
+        } catch (\Throwable $e) {
+            // Si la columna no se puede crear, no bloquea el resto de la API.
+        }
+        try {
+            UsuarioModel::asegurarColumnaVisitaDashboard($db);
+        } catch (\Throwable $e) {
+            // Si la columna no se puede crear, no bloquea el resto de la API.
+        }
     }
 
     public function listar(): array {
@@ -69,6 +79,7 @@ class SocioModel {
 
     public function inactivos(int $dias = 7): array {
         $dias = max(1, $dias);
+        UsuarioModel::asegurarColumnaVisitaDashboard($this->db);
         $stmt = $this->db->query(
             'SELECT s.id_socio, s.id_usuario, s.id_entrenador,
                     u.nombre, u.apellido,
@@ -77,12 +88,9 @@ class SocioModel {
              JOIN usuarios u ON u.id_usuario = s.id_usuario
              LEFT JOIN entrenadores e ON e.id_entrenador = s.id_entrenador
              LEFT JOIN usuarios eu ON eu.id_usuario = e.id_usuario
-             LEFT JOIN (
-                 SELECT id_socio, MAX(fecha) AS ultima
-                 FROM entrenamientos
-                 GROUP BY id_socio
-             ) ult ON ult.id_socio = s.id_socio
-             WHERE COALESCE(ult.ultima, u.fecha_alta) < DATE_SUB(NOW(), INTERVAL ' . $dias . ' DAY)'
+             WHERE u.activo = 1
+               AND COALESCE(u.ultima_visita_dashboard, u.fecha_alta)
+                   < DATE_SUB(NOW(), INTERVAL ' . $dias . ' DAY)'
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -96,7 +104,7 @@ class SocioModel {
              JOIN usuarios u ON u.id_usuario = s.id_usuario
              LEFT JOIN entrenadores e ON e.id_entrenador = s.id_entrenador
              LEFT JOIN usuarios eu ON eu.id_usuario = e.id_usuario
-             WHERE DATE_ADD(u.fecha_alta, INTERVAL 1 YEAR) < NOW()'
+             WHERE s.membresia_activa = 0'
         );
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
