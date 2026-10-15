@@ -1,12 +1,14 @@
 <?php
 // api/index.php
 
+require_once 'autoload.php';
+
+\App\Utils\Auth::iniciarSesion();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// ... el resto de tu código (require autoload, router, etc.)
-// 1. Iniciamos buffer para atrapar cualquier error de texto plano o warnings de PHP
 ob_start(); 
 
 // 2. Cabeceras estrictas para API-Driven
@@ -20,8 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-require_once 'autoload.php';
 
 // 3. Cargar las variables del archivo .env
 \App\Utils\EnvLoader::load(__DIR__ . '/.env');

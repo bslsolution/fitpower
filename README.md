@@ -4,24 +4,49 @@ Aplicación de gimnasio: el **administrador** registra usuarios, el **entrenador
 
 ## Levantar
 
+En la carpeta que tiene `docker-compose.yml` (no en la carpeta de arriba):
+
 ```bash
 docker compose up --build
 ```
 
+Esperá a que termine de armar MySQL (la primera vez tarda). Después:
+
 - App: http://localhost:8080
+- Login: http://localhost:8080/front/dist/pages/login.html
 - API: http://localhost:8080/api/estado
 - phpMyAdmin: http://localhost:8081
 
+Abrí la app **en el navegador con esa URL**. No abras el HTML haciendo doble clic al archivo.
+
 Usuarios de prueba (contraseña `password`): `admin@gym.local`, `entrenador@gym.local`, `socio@gym.local`.
 
-Si el SQL cambió y MySQL ya tenía datos viejos (tablas de automotora):
+Si el login no entra, o MySQL ya tenía datos viejos:
 
 ```bash
 docker compose down -v
 docker compose up --build
 ```
 
-Variables de entorno: copiar `api/.env.example` → `api/.env` (ese archivo no se sube a Git).
+## Zip en otra PC
+
+1. Descomprimí el zip.
+2. Entrá a la carpeta que contiene `docker-compose.yml`.
+3. En esa carpeta corré:
+
+```bash
+docker compose down
+docker compose up --build
+```
+
+Si el puerto 8080 no abre, es común que esa PC ya tenga MySQL/XAMPP en el 3306: este compose **ya no usa el 3306 del Windows**, solo Docker. Dejá que termine el build y abrí http://localhost:8080
+
+4. Entrá a http://localhost:8080 (no uses `file://`).
+5. Login: `admin@gym.local` / `password`.
+
+Si todavía no entra, `docker compose down -v` y volvé a `docker compose up --build`.
+
+Si copiaste `api/.env.example` a `api/.env`, dejá `DB_HOST=db` (no `localhost`).
 
 ## Documentación
 

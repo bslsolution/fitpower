@@ -15,31 +15,32 @@ Marcá cada ítem cuando esté hecho. Este es el orden de trabajo para el equipo
 - [x] MER definido
 - [x] Pasaje a tablas (PK / FK / cardinalidades)
 - [x] Script SQL de creación + datos de prueba
-- [ ] Levantar Docker y verificar tablas en phpMyAdmin (`http://localhost:8081`)
-- [ ] Confirmar `/api/estado` responde y cuenta usuarios
+- [x] Levantar Docker y verificar tablas en phpMyAdmin (`http://localhost:8081`)
+- [x] Confirmar `/api/estado` responde y cuenta usuarios
 
 ## 2. API (MVC)
 
-- [ ] Auth: login (POST) y sesión/token
-- [ ] Middleware de roles: `administrador`, `entrenador`, `socio`
-- [ ] Solo el administrador registra usuarios
-- [ ] CRUD de ejercicios (catálogo)
-- [ ] CRUD de rutinas (entrenador)
-- [ ] Agregar / editar / borrar ejercicios dentro de una rutina
-- [ ] Reordenar ejercicios de la rutina (`PUT` de `orden`)
-- [ ] Series por ejercicio: crear, editar, borrar, reordenar
-- [ ] Asignar rutina a un socio
-- [ ] Socio: listar y ver detalle de sus rutinas (solo lectura)
+- [x] Auth: login (POST) y sesión/token
+- [x] Middleware de roles: `administrador`, `entrenador`, `socio`
+- [x] Solo el administrador registra usuarios
+- [x] CRUD de ejercicios (catálogo)
+- [x] CRUD de rutinas (entrenador)
+- [x] Agregar / editar / borrar ejercicios dentro de una rutina
+- [x] Reordenar ejercicios de la rutina (`PUT` de `orden`)
+- [x] Series por ejercicio: crear, editar, borrar, reordenar
+- [x] Asignar rutina a un socio
+- [x] Socio: listar y ver detalle de sus rutinas (solo lectura)
 
 ## 3. Frontend (API-driven)
 
-- [ ] Integrar maquetas de `assets/` en `front/`
-- [ ] Landing pública
-- [ ] Login (HTML nunca habla con PHP directo: todo por `front/dist/js/api.js`)
-- [ ] Dashboard administrador: alta de usuarios
-- [ ] Dashboard entrenador: armar rutina, mover ejercicios, asignar a socio
-- [ ] Dashboard socio: ver rutinas, ejercicios y series
-- [ ] Estilos desktop + mobile
+- [x] Integrar maquetas de `assets/` en `front/`
+- [x] Landing pública
+- [x] Login (HTML nunca habla con PHP directo: todo por `front/dist/js/api.js`)
+- [x] Dashboard administrador: alta de usuarios
+- [x] Dashboard entrenador: armar rutina, mover ejercicios, asignar a socio
+- [x] Dashboard socio: ver rutinas, ejercicios y series
+- [x] Socio: cargar peso por serie y ver progreso
+- [x] Estilos desktop + mobile
 
 ## 4. Calidad y entrega
 
