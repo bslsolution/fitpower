@@ -5,9 +5,18 @@ require_once 'autoload.php';
 
 \App\Utils\Auth::iniciarSesion();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+$isLocalHost = isset($_SERVER['HTTP_HOST'])
+    && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false
+        || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
+if ($isLocalHost) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(E_ALL);
+}
 
 ob_start(); 
 
@@ -35,9 +44,6 @@ try {
     ob_clean();
     error_log('DB connection failed: ' . $e->getMessage());
     http_response_code(500);
-    $isLocalHost = isset($_SERVER['HTTP_HOST'])
-        && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false
-            || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
     $clientMsg = $isLocalHost
         ? ('Error crítico de BD: ' . $e->getMessage())
         : 'Error crítico de BD: no se pudo conectar al servidor de datos';

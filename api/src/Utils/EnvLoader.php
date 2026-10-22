@@ -35,7 +35,9 @@ class EnvLoader {
                 continue;
             }
 
-            putenv(sprintf('%s=%s', $name, $value));
+            if (function_exists('putenv')) {
+                @putenv(sprintf('%s=%s', $name, $value));
+            }
             $_ENV[$name] = $value;
             $_SERVER[$name] = $value;
         }

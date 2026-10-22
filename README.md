@@ -48,6 +48,27 @@ Si todavía no entra, `docker compose down -v` y volvé a `docker compose up --b
 
 Si copiaste `api/.env.example` a `api/.env`, dejá `DB_HOST=db` (no `localhost`).
 
+## Publicar en internet (gratis)
+
+GitHub Pages no sirve para FitPower: hace falta **PHP + MySQL**. La opción gratuita más simple, sin tarjeta, es [InfinityFree](https://www.infinityfree.com/).
+
+1. Creá una cuenta en https://www.infinityfree.com/ (solo email).
+2. En el panel: **Create Website** y elegí un subdominio gratis, por ejemplo `fitpower.infinityfreeapp.com`.
+3. Entrá a **MySQL Databases** → creá una base. Anotá **host**, **nombre de la base**, **usuario** y **contraseña** (no uses `localhost`).
+4. Abrí **phpMyAdmin**, seleccioná esa base e importá `api/config/init.sql` (o `documentos/base-de-datos/schema.sql`).
+5. Subí el proyecto a `htdocs` (File Manager o FTP). Tiene que quedar así:
+   - `htdocs/index.html`
+   - `htdocs/.htaccess`
+   - `htdocs/api/`
+   - `htdocs/front/`
+6. En el servidor, copiá `api/.env.example` a `api/.env` y poné los datos de MySQL del paso 3.
+7. En el panel, PHP **8.2 o más**.
+8. Abrí `https://TU-SUBDOMINIO.infinityfreeapp.com`. Login de prueba: `admin@gym.local` / `password`.
+
+La primera vez InfinityFree puede pedirte confirmar el email y esperar unos minutos a que active SSL.
+
+No subas `api/.env` a GitHub: ese archivo tiene la clave de la base.
+
 ## Documentación
 
 - Checklist: [`documentos/CHECKLIST.md`](documentos/CHECKLIST.md)

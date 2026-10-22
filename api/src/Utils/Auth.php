@@ -6,16 +6,23 @@ class Auth {
         if (session_status() === PHP_SESSION_ACTIVE) {
             return;
         }
-        $dir = '/tmp/fitpower-sessions';
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0777, true);
+        $enDocker = file_exists('/.dockerenv') || file_exists('/run/.containerenv');
+        if ($enDocker) {
+            $dir = '/tmp/fitpower-sessions';
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+            if (is_dir($dir) && is_writable($dir)) {
+                session_save_path($dir);
+            }
         }
-        if (is_dir($dir) && is_writable($dir)) {
-            session_save_path($dir);
-        }
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || ((int) ($_SERVER['SERVER_PORT'] ?? 0) === 443)
+            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
         session_set_cookie_params([
             'lifetime' => 0,
             'path' => '/',
+            'secure' => $https,
             'httponly' => true,
             'samesite' => 'Lax',
         ]);
