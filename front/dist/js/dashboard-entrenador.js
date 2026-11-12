@@ -22,8 +22,10 @@
     const resumen = resumenRes.resumen || {};
     const socios = sociosRes.socios || resumenRes.socios || [];
     const rutinas = rutinasRes.rutinas || [];
-    const ejercicios = ejerciciosRes.ejercicios || [];
+    let ejercicios = ejerciciosRes.ejercicios || [];
     const grupos = gruposRes.grupos || [];
+    let paginaEjercicios = 1;
+    const EJERCICIOS_POR_PAGINA = 10;
     const asignadas = rutinas.filter((r) => r.id_socio);
 
     function filasSocios(lista) {
@@ -224,6 +226,90 @@
         bindTablaSocios();
     }
 
+    function numerosPagina(actual, total) {
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+        const items = [1];
+        if (actual > 3) items.push('…');
+        const desde = Math.max(2, actual - 1);
+        const hasta = Math.min(total - 1, actual + 1);
+        for (let i = desde; i <= hasta; i += 1) items.push(i);
+        if (actual < total - 2) items.push('…');
+        items.push(total);
+        return items;
+    }
+
+    function filaEjercicio(e) {
+        return `<tr>
+            <td><img class="exercise-gif-thumb" src="${e.imagen || '../imagenes/ejercicios/sentadilla.gif'}${String(e.imagen || '').includes('?') ? '' : '?v=fp-rack'}" alt=""></td>
+            <td>${e.nombre}</td>
+            <td>${e.grupo_muscular || ''}</td>
+            <td><button class="btn btn-ghost btn-small" data-del="${e.id_ejercicio}">${t('delete_btn')}</button></td>
+        </tr>`;
+    }
+
+    function pintarTablaEjercicios() {
+        const tbody = document.getElementById('ej-tbody');
+        if (!tbody) return;
+        const totalPaginas = Math.max(1, Math.ceil(ejercicios.length / EJERCICIOS_POR_PAGINA));
+        if (paginaEjercicios > totalPaginas) paginaEjercicios = totalPaginas;
+        if (paginaEjercicios < 1) paginaEjercicios = 1;
+        const inicio = ejercicios.length ? (paginaEjercicios - 1) * EJERCICIOS_POR_PAGINA : 0;
+        const pagina = ejercicios.slice(inicio, inicio + EJERCICIOS_POR_PAGINA);
+        tbody.innerHTML = pagina.length
+            ? pagina.map(filaEjercicio).join('')
+            : `<tr><td colspan="4" class="muted">${t('exercises_empty')}</td></tr>`;
+        const count = document.getElementById('ej-count');
+        if (count) {
+            count.textContent = ejercicios.length
+                ? t('users_showing', { from: inicio + 1, to: inicio + pagina.length, total: ejercicios.length })
+                : '';
+        }
+        const nav = document.getElementById('ej-pager');
+        if (nav) {
+            if (!ejercicios.length || totalPaginas <= 1) {
+                nav.hidden = true;
+                nav.innerHTML = '';
+            } else {
+                nav.hidden = false;
+                const btn = (page, label) => `
+                    <button type="button" class="btn btn-chip ${page === paginaEjercicios ? 'btn-navy' : 'btn-ghost'}" data-page="${page}" ${page === paginaEjercicios ? 'aria-current="page"' : ''} aria-label="${t('users_page', { n: page })}">${label}</button>
+                `;
+                const prevDis = paginaEjercicios <= 1;
+                const nextDis = paginaEjercicios >= totalPaginas;
+                nav.innerHTML = `
+                    <button type="button" class="btn btn-ghost btn-chip" data-page="${paginaEjercicios - 1}" ${prevDis ? 'disabled' : ''}>${t('users_prev')}</button>
+                    ${numerosPagina(paginaEjercicios, totalPaginas).map((n) => (
+                        n === '…'
+                            ? '<span class="pager-ellipsis" aria-hidden="true">…</span>'
+                            : btn(n, n)
+                    )).join('')}
+                    <button type="button" class="btn btn-ghost btn-chip" data-page="${paginaEjercicios + 1}" ${nextDis ? 'disabled' : ''}>${t('users_next')}</button>
+                `;
+                nav.querySelectorAll('[data-page]').forEach((b) => {
+                    b.addEventListener('click', () => {
+                        const page = Number(b.dataset.page);
+                        if (!page || page === paginaEjercicios) return;
+                        paginaEjercicios = page;
+                        pintarTablaEjercicios();
+                    });
+                });
+            }
+        }
+        tbody.querySelectorAll('[data-del]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const res = await API.del('/ejercicios/' + btn.dataset.del);
+                if (res.status !== 'ok') {
+                    alert(I18n.api(res.message));
+                    return;
+                }
+                ejercicios = ejercicios.filter((e) => Number(e.id_ejercicio) !== Number(btn.dataset.del));
+                pintarTablaEjercicios();
+            });
+        });
+    }
+
     function vistaEjercicios() {
         document.getElementById('titulo-pagina').textContent = t('exercises_title');
         const opcionesGrupo = `<option value="">${t('pick_group')}</option>` + grupos.map((g) =>
@@ -248,17 +334,12 @@
                     <button class="btn btn-navy" id="ej-crear" ${grupos.length ? '' : 'disabled'}>${t('add')}</button>
                 </div>
                 ${grupos.length ? '' : `<p class="muted" style="margin-top:12px">${t('no_groups_trainer')}</p>`}
+                <p class="muted users-count" id="ej-count"></p>
                 <table class="table" style="margin-top:16px">
                     <thead><tr><th></th><th>${t('th_name')}</th><th>${t('th_group')}</th><th></th></tr></thead>
-                    <tbody>
-                        ${ejercicios.map((e) => `<tr>
-                            <td><img class="exercise-gif-thumb" src="${e.imagen || '../imagenes/ejercicios/sentadilla.gif'}${String(e.imagen || '').includes('?') ? '' : '?v=fp-rack'}" alt=""></td>
-                            <td>${e.nombre}</td>
-                            <td>${e.grupo_muscular || ''}</td>
-                            <td><button class="btn btn-ghost btn-small" data-del="${e.id_ejercicio}">${t('delete_btn')}</button></td>
-                        </tr>`).join('')}
-                    </tbody>
+                    <tbody id="ej-tbody"></tbody>
                 </table>
+                <nav class="users-pager" id="ej-pager" hidden></nav>
             </article>
         `;
         document.getElementById('ej-crear').addEventListener('click', async () => {
@@ -277,19 +358,23 @@
                 grupo_muscular: grupo,
                 descripcion
             });
-            if (res.status === 'ok') location.reload();
-            else {
+            if (res.status !== 'ok') {
                 error.textContent = I18n.api(res.message);
                 error.style.display = 'block';
+                return;
             }
+            const creado = res.ejercicio || { nombre, grupo_muscular: grupo, descripcion, imagen: '' };
+            ejercicios.push(creado);
+            ejercicios.sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), 'es'));
+            const idx = ejercicios.findIndex((e) => Number(e.id_ejercicio) === Number(creado.id_ejercicio));
+            paginaEjercicios = idx >= 0
+                ? Math.floor(idx / EJERCICIOS_POR_PAGINA) + 1
+                : Math.ceil(ejercicios.length / EJERCICIOS_POR_PAGINA);
+            document.getElementById('ej-nombre').value = '';
+            document.getElementById('ej-desc').value = '';
+            pintarTablaEjercicios();
         });
-        contenido.querySelectorAll('[data-del]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-                const res = await API.del('/ejercicios/' + btn.dataset.del);
-                if (res.status === 'ok') location.reload();
-                else alert(I18n.api(res.message));
-            });
-        });
+        pintarTablaEjercicios();
     }
 
     async function crearRutina() {

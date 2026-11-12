@@ -1061,7 +1061,26 @@ button, input, select, textarea { font-family: inherit; }
     letter-spacing: 0.06em;
     line-height: 1.1;
 }
-.timer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.timer-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+.timer-actions .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+    transform: none;
+    box-shadow: none;
+}
+.timer-actions .btn:hover,
+.timer-actions .btn:active,
+.timer-actions .btn:disabled {
+    transform: none;
+    box-shadow: none;
+}
 .workout-timer .btn-primary { background: #fff; color: #0D4784; }
 .workout-timer .btn-ghost {
     background: transparent;

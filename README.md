@@ -65,6 +65,15 @@ GitHub Pages no sirve para FitPower: hace falta **PHP + MySQL**. La opción grat
 7. En el panel, PHP **8.2 o más**.
 8. Abrí `https://TU-SUBDOMINIO.infinityfreeapp.com`. Login de prueba: `admin@gym.local` / `password`.
 
+### Hostinger
+
+Hostinger usa MariaDB, y este SQL es compatible. Lo que no se puede importar en phpMyAdmin es el `.env`.
+
+1. En hPanel → **Bases de datos MySQL**, creá la base y el usuario. Anotá host, nombre, usuario y contraseña.
+2. Abrí **phpMyAdmin**, hacé clic en esa base (a la izquierda) e **Importar** el archivo `api/config/init.sql` (o `documentos/base-de-datos/schema.sql`).
+3. En el **Administrador de archivos**, subí el proyecto a `public_html` y creá `public_html/api/.env` con esas claves. En Hostinger el host suele ser `localhost`.
+4. No subas `api/.env` a GitHub.
+
 La primera vez InfinityFree puede pedirte confirmar el email y esperar unos minutos a que active SSL.
 
 No subas `api/.env` a GitHub: ese archivo tiene la clave de la base.

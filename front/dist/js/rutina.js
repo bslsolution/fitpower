@@ -51,30 +51,51 @@
             { k: ['sentadilla bulgara'], f: 'sentadilla-bulgara.gif' },
             { k: ['press inclinado con mancuerna'], f: 'press-inclinado-mancuernas.gif' },
             { k: ['press inclinado'], f: 'press-inclinado.gif' },
+            { k: ['press declinado'], f: 'press-declinado.gif' },
             { k: ['press banca', 'press de banca', 'bench'], f: 'press-banca.gif' },
+            { k: ['remo en polea'], f: 'remo-polea.gif' },
+            { k: ['remo sentado'], f: 'remo-sentado.gif' },
             { k: ['remo en t'], f: 'remo-t.gif' },
             { k: ['remo con mancuerna'], f: 'remo-mancuerna.gif' },
+            { k: ['curl predicador'], f: 'curl-predicador.gif' },
+            { k: ['curl concentracion'], f: 'curl-concentracion.gif' },
             { k: ['curl martillo', 'martillo'], f: 'curl-martillo.gif' },
             { k: ['elevaciones laterales', 'laterales'], f: 'elevaciones-laterales.gif' },
+            { k: ['elevaciones frontales'], f: 'elevaciones.gif' },
             { k: ['press militar', 'militar'], f: 'press-militar.gif' },
             { k: ['press frances', 'frances'], f: 'press-frances.gif' },
             { k: ['cuadriceps'], f: 'extension-cuadriceps.gif' },
+            { k: ['curl femoral'], f: 'extensiones.gif' },
             { k: ['peck deck', 'peck'], f: 'peck-deck.gif' },
             { k: ['jalon'], f: 'jalon-pecho.gif' },
-            { k: ['polea'], f: 'triceps-polea.gif' },
+            { k: ['patada de triceps'], f: 'patada-triceps.gif' },
+            { k: ['triceps en polea', 'polea'], f: 'triceps-polea.gif' },
+            { k: ['peso muerto rumano'], f: 'peso-muerto-rumano.gif' },
+            { k: ['peso muerto', 'deadlift'], f: 'peso-muerto.gif' },
+            { k: ['prensa'], f: 'prensa-piernas.gif' },
+            { k: ['zancada'], f: 'zancadas.gif' },
+            { k: ['hip thrust'], f: 'hip-thrust.gif' },
+            { k: ['gemelo'], f: 'gemelos.gif' },
+            { k: ['apertura'], f: 'aperturas.gif' },
+            { k: ['face pull'], f: 'face-pull.gif' },
+            { k: ['hiperextension'], f: 'hiperextensiones.gif' },
+            { k: ['pajaro'], f: 'pajaros.gif' },
+            { k: ['arnold'], f: 'arnold-press.gif' },
+            { k: ['encogimiento'], f: 'encogimientos.gif' },
+            { k: ['mountain'], f: 'mountain-climbers.gif' },
+            { k: ['russian'], f: 'russian-twist.gif' },
+            { k: ['oblicuo'], f: 'plancha-lateral.gif' },
+            { k: ['elevacion de pierna', 'leg raise'], f: 'elevacion-piernas.gif' },
             { k: ['sentadilla', 'squat'], f: 'sentadilla.gif' },
             { k: ['remo'], f: 'remo.gif' },
             { k: ['plancha', 'plank'], f: 'plancha.gif' },
             { k: ['fondos'], f: 'fondos.gif' },
-            { k: ['peso muerto', 'deadlift'], f: 'peso-muerto.gif' },
-            { k: ['curl', 'biceps'], f: 'curl-martillo.gif' },
+            { k: ['curl', 'biceps'], f: 'curl.gif' },
             { k: ['dominada', 'pull'], f: 'dominadas.gif' },
             { k: ['flexion', 'push'], f: 'flexiones.gif' },
             { k: ['abdominal', 'crunch'], f: 'crunch.gif' },
-            { k: ['elevacion', 'leg raise'], f: 'elevaciones.gif' },
             { k: ['burpee'], f: 'burpees.gif' },
-            { k: ['extension'], f: 'extensiones.gif' },
-            { k: ['rodilla', 'high knee'], f: 'rodillas.gif' }
+            { k: ['extension'], f: 'extensiones.gif' }
         ];
         const hit = reglas.find((r) => r.k.some((k) => n.includes(k)));
         if (hit) return GIF_BASE + hit.f + v;
@@ -368,18 +389,18 @@
                             <button class="btn btn-danger btn-small" data-quitar="${ej.id_rutina_ejercicio}">${t('remove')}</button>
                         </div>`}
                     </div>
-                    <table class="table">
+                    <table class="table sets-table">
                         <thead><tr><th>${t('th_set')}</th><th>${t('th_reps')}</th><th>${t('th_weight')}</th><th>${t('th_rest')}</th><th></th></tr></thead>
                         <tbody>
                             ${(ej.series || []).map((s) => `
                                 <tr>
-                                    <td>${s.orden}</td>
-                                    <td>${soloLectura ? s.repeticiones : `<input data-serie="${s.id_serie}" data-campo="repeticiones" value="${s.repeticiones}" style="width:70px">`}</td>
-                                    <td>${soloLectura
+                                    <td data-label="${t('th_set')}">${s.orden}</td>
+                                    <td data-label="${t('th_reps')}">${soloLectura ? s.repeticiones : `<input data-serie="${s.id_serie}" data-campo="repeticiones" value="${s.repeticiones}" style="width:70px">`}</td>
+                                    <td data-label="${t('th_weight')}">${soloLectura
                                         ? `<input class="peso-input" data-peso-local="${s.id_serie}" type="number" min="0" step="0.5" inputmode="decimal" placeholder="${t('weight_ph')}" value="${s.peso_kg ?? ''}">`
                                         : `<input class="peso-input" data-serie="${s.id_serie}" data-campo="peso_kg" type="number" min="0" step="0.5" inputmode="decimal" placeholder="${t('weight_ph')}" value="${s.peso_kg ?? ''}">`}</td>
-                                    <td>${soloLectura ? (s.descanso_segundos ?? '—') : `<input data-serie="${s.id_serie}" data-campo="descanso_segundos" value="${s.descanso_segundos ?? ''}" style="width:80px">`}</td>
-                                    <td>${soloLectura
+                                    <td data-label="${t('th_rest')}">${soloLectura ? (s.descanso_segundos ?? '—') : `<input data-serie="${s.id_serie}" data-campo="descanso_segundos" value="${s.descanso_segundos ?? ''}" style="width:80px">`}</td>
+                                    <td class="sets-action">${soloLectura
                                         ? `<button class="btn btn-navy btn-small" type="button" data-terminar="${s.id_serie}">${t('finish')}</button>`
                                         : `<button class="btn btn-ghost btn-small" data-borrar-serie="${s.id_serie}">x</button>`}</td>
                                 </tr>

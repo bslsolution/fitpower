@@ -116,7 +116,83 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    .workout-timer { top: 62px; }
+    .btn:hover,
+    .btn:active {
+        transform: none;
+        box-shadow: none;
+    }
+    .workout-timer {
+        top: 62px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+    .timer-actions {
+        width: 100%;
+        gap: 6px;
+    }
+    .timer-actions .btn {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+    .sets-table thead { display: none; }
+    .sets-table,
+    .sets-table tbody,
+    .sets-table tr,
+    .sets-table td {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+    }
+    .sets-table tr {
+        box-sizing: border-box;
+        padding: 4px 0 14px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e8eef6;
+    }
+    .sets-table tr:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+    .sets-table td {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 0;
+    }
+    .sets-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .sets-table td.sets-action {
+        display: block;
+        padding-top: 10px;
+    }
+    .sets-table td.sets-action::before { content: none; }
+    .sets-table td.sets-action .btn {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+    .sets-table .peso-input {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .routine-end-actions {
+        align-items: stretch;
+    }
+    .routine-end-actions .btn {
+        min-width: 0;
+        width: 100%;
+        justify-content: center;
+    }
     .user-chip { padding: 6px; }
     .user-chip-text { display: none; }
     .fp-points-chip { padding: 6px 10px 6px 6px; }

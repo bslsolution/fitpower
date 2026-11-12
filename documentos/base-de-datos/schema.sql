@@ -1,5 +1,7 @@
 -- ========================================================
 -- FITPOWER — DDL + datos de prueba
+-- En phpMyAdmin (Hostinger u otro): seleccioná la base e importá ESTE archivo
+-- o api/config/init.sql. No importar .env ni .env.example (eso no es SQL).
 -- Charset utf8mb4. Docker ya crea la base (MYSQL_DATABASE).
 -- Contraseña de usuarios seed: password
 -- Hash: bcrypt de la palabra "password"
@@ -336,7 +338,50 @@ INSERT INTO ejercicios (id_ejercicio, id_entrenador_creador, nombre, grupo_muscu
     (1, 1, 'Sentadilla', 'Pierna', 'Barra en espalda, cadera atrás, rodillas alineadas.', '/front/dist/imagenes/ejercicios/sentadilla.gif'),
     (2, 1, 'Press banca', 'Pecho', 'Escápulas juntas, bajada controlada al pecho.', '/front/dist/imagenes/ejercicios/press-banca.gif'),
     (3, 1, 'Remo con barra', 'Espalda', 'Torso estable, llevar la barra al abdomen.', '/front/dist/imagenes/ejercicios/remo.gif'),
-    (4, 1, 'Plancha', 'Core', 'Cuerpo en línea, sin hundir la lumbar.', '/front/dist/imagenes/ejercicios/plancha.gif');
+    (4, 1, 'Plancha', 'Core', 'Cuerpo en línea, sin hundir la lumbar.', '/front/dist/imagenes/ejercicios/plancha.gif'),
+    (5, 1, 'Sentadilla búlgara', 'Pierna', 'Pie trasero apoyado, baja con el torso erguido.', '/front/dist/imagenes/ejercicios/sentadilla-bulgara.gif'),
+    (6, 1, 'Peso muerto', 'Pierna', 'Barra cerca de las piernas, espalda neutra al levantar.', '/front/dist/imagenes/ejercicios/peso-muerto.gif'),
+    (7, 1, 'Peso muerto rumano', 'Pierna', 'Cadera atrás, rodillas semiflexionadas, barra pegada.', '/front/dist/imagenes/ejercicios/peso-muerto-rumano.gif'),
+    (8, 1, 'Extensión de cuádriceps', 'Pierna', 'Extiende las rodillas sin despegar la espalda del respaldo.', '/front/dist/imagenes/ejercicios/extension-cuadriceps.gif'),
+    (9, 1, 'Curl femoral', 'Pierna', 'Acostado, flexioná las rodillas sin arquear la lumbar.', '/front/dist/imagenes/ejercicios/extensiones.gif'),
+    (10, 1, 'Prensa de piernas', 'Pierna', 'Bajá el trineo controlado y empujá con talones.', '/front/dist/imagenes/ejercicios/prensa-piernas.gif'),
+    (11, 1, 'Zancadas', 'Pierna', 'Paso largo, rodilla de atrás cerca del piso.', '/front/dist/imagenes/ejercicios/zancadas.gif'),
+    (12, 1, 'Hip thrust', 'Pierna', 'Omóplatos en el banco, empujá la cadera arriba.', '/front/dist/imagenes/ejercicios/hip-thrust.gif'),
+    (13, 1, 'Elevación de gemelos', 'Pierna', 'Subí a la punta de los pies y bajá lento.', '/front/dist/imagenes/ejercicios/gemelos.gif'),
+    (14, 1, 'Press inclinado', 'Pecho', 'Banco inclinado, barra al pecho alto.', '/front/dist/imagenes/ejercicios/press-inclinado.gif'),
+    (15, 1, 'Press inclinado con mancuernas', 'Pecho', 'Mancuernas en banco inclinado, recorré hasta arriba.', '/front/dist/imagenes/ejercicios/press-inclinado-mancuernas.gif'),
+    (16, 1, 'Press declinado', 'Pecho', 'Banco declinado, barra al pecho bajo.', '/front/dist/imagenes/ejercicios/press-declinado.gif'),
+    (17, 1, 'Peck deck', 'Pecho', 'Juntá los brazos al frente sin encoger hombros.', '/front/dist/imagenes/ejercicios/peck-deck.gif'),
+    (18, 1, 'Aperturas con mancuernas', 'Pecho', 'Brazos semi-extendidos, abrí y cerrá sobre el pecho.', '/front/dist/imagenes/ejercicios/aperturas.gif'),
+    (19, 1, 'Flexiones', 'Pecho', 'Cuerpo en línea, pecho cerca del piso.', '/front/dist/imagenes/ejercicios/flexiones.gif'),
+    (20, 1, 'Fondos', 'Pecho', 'Bajada en paralelas hasta 90 grados.', '/front/dist/imagenes/ejercicios/fondos.gif'),
+    (21, 1, 'Remo con mancuerna', 'Espalda', 'Una mano en el banco, codo pegado al torso.', '/front/dist/imagenes/ejercicios/remo-mancuerna.gif'),
+    (22, 1, 'Remo en T', 'Espalda', 'Pecho apoyado, llevá el peso hacia la cadera.', '/front/dist/imagenes/ejercicios/remo-t.gif'),
+    (23, 1, 'Jalón al pecho', 'Espalda', 'Tirón al pecho alto, omóplatos juntos.', '/front/dist/imagenes/ejercicios/jalon-pecho.gif'),
+    (24, 1, 'Dominadas', 'Espalda', 'Pecho al frente, barbilla por encima de la barra.', '/front/dist/imagenes/ejercicios/dominadas.gif'),
+    (25, 1, 'Remo en polea', 'Espalda', 'Sentado, llevá el agarre al abdomen.', '/front/dist/imagenes/ejercicios/remo-polea.gif'),
+    (26, 1, 'Remo sentado', 'Espalda', 'Máquina sentado, omóplatos atrás al tirar.', '/front/dist/imagenes/ejercicios/remo-sentado.gif'),
+    (27, 1, 'Hiperextensiones', 'Espalda', 'Banco romano, subí el torso en línea.', '/front/dist/imagenes/ejercicios/hiperextensiones.gif'),
+    (28, 1, 'Face pull', 'Espalda', 'Polea alta a la cara, abrí los codos.', '/front/dist/imagenes/ejercicios/face-pull.gif'),
+    (29, 1, 'Press militar', 'Hombros', 'Barra desde los hombros, sin arquear la lumbar.', '/front/dist/imagenes/ejercicios/press-militar.gif'),
+    (30, 1, 'Elevaciones laterales', 'Hombros', 'Mancuernas al costado, hasta la altura del hombro.', '/front/dist/imagenes/ejercicios/elevaciones-laterales.gif'),
+    (31, 1, 'Elevaciones frontales', 'Hombros', 'Subí las mancuernas al frente, brazos semi-extendidos.', '/front/dist/imagenes/ejercicios/elevaciones.gif'),
+    (32, 1, 'Pájaros', 'Hombros', 'Torso inclinado, abrí los brazos a los costados.', '/front/dist/imagenes/ejercicios/pajaros.gif'),
+    (33, 1, 'Arnold press', 'Hombros', 'Rotá las palmas al subir las mancuernas.', '/front/dist/imagenes/ejercicios/arnold-press.gif'),
+    (34, 1, 'Encogimientos', 'Hombros', 'Subí los hombros hacia las orejas, sin doblar brazos.', '/front/dist/imagenes/ejercicios/encogimientos.gif'),
+    (35, 1, 'Curl de bíceps', 'Brazos', 'Barra o mancuernas, codos fijos al costado.', '/front/dist/imagenes/ejercicios/curl.gif'),
+    (36, 1, 'Curl martillo', 'Brazos', 'Agarre neutro, subí sin balancear el torso.', '/front/dist/imagenes/ejercicios/curl-martillo.gif'),
+    (37, 1, 'Curl predicador', 'Brazos', 'Brazo apoyado, recorré completo sin despegar.', '/front/dist/imagenes/ejercicios/curl-predicador.gif'),
+    (38, 1, 'Curl concentración', 'Brazos', 'Codo interno en el muslo, subí controlado.', '/front/dist/imagenes/ejercicios/curl-concentracion.gif'),
+    (39, 1, 'Press francés', 'Brazos', 'Bajá la barra detrás de la cabeza, codos fijos.', '/front/dist/imagenes/ejercicios/press-frances.gif'),
+    (40, 1, 'Tríceps en polea', 'Brazos', 'Empujá la polea abajo, codos pegados al cuerpo.', '/front/dist/imagenes/ejercicios/triceps-polea.gif'),
+    (41, 1, 'Patada de tríceps', 'Brazos', 'Torso inclinado, extendé el codo hacia atrás.', '/front/dist/imagenes/ejercicios/patada-triceps.gif'),
+    (42, 1, 'Crunch', 'Core', 'Encogé el abdomen, hombros apenas despegan.', '/front/dist/imagenes/ejercicios/crunch.gif'),
+    (43, 1, 'Crunch oblicuo', 'Core', 'Llevá el hombro hacia la rodilla opuesta.', '/front/dist/imagenes/ejercicios/plancha-lateral.gif'),
+    (44, 1, 'Elevación de piernas', 'Core', 'Colgado, subí las piernas sin balancear.', '/front/dist/imagenes/ejercicios/elevacion-piernas.gif'),
+    (45, 1, 'Russian twist', 'Core', 'Girá el torso de lado a lado con el abdomen firme.', '/front/dist/imagenes/ejercicios/russian-twist.gif'),
+    (46, 1, 'Mountain climbers', 'Core', 'En plancha, llevá las rodillas al pecho en ritmo.', '/front/dist/imagenes/ejercicios/mountain-climbers.gif'),
+    (47, 1, 'Burpees', 'Core', 'Sentadilla, plancha, flexión y salto.', '/front/dist/imagenes/ejercicios/burpees.gif');
 
 -- Plantilla (sin socio)
 INSERT INTO rutinas (id_rutina, id_entrenador, id_socio, id_rutina_origen, nombre, objetivo, estado) VALUES
